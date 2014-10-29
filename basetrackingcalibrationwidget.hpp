@@ -1,14 +1,10 @@
 #ifndef BASECALIBRATIONWIDGET_HPP
 #define BASECALIBRATIONWIDGET_HPP
 
-#include <QWidget>
-
-#include <QPointF>
 #include <QVector>
-
 #include <eyesposition.hpp>
 
-class BaseTrackingCalibrationWidget : public QWidget
+class BaseTrackingCalibrationWidget
 {
 public:
     virtual QVector<EyesPosition> calibrationResult() const = 0;

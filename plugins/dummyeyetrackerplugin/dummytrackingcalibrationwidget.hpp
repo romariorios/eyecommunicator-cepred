@@ -1,7 +1,7 @@
 #ifndef DUMMYTRACKINGCALIBRATIONWIDGET_HPP
 #define DUMMYTRACKINGCALIBRATIONWIDGET_HPP
 
-#include "../basetrackingcalibrationwidget.hpp"
+#include <basetrackingcalibrationwidget.hpp>
 #include <QDialog>
 
 namespace Ui {
@@ -9,8 +9,8 @@ class DummyTrackingCalibrationWidget;
 }
 
 class DummyTrackingCalibrationWidget :
-    public BaseTrackingCalibrationWidget,
-    public QDialog
+    public QDialog,
+    public BaseTrackingCalibrationWidget
 {
     Q_OBJECT
 

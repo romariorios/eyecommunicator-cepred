@@ -1,5 +1,5 @@
 #include "dummyeyetrackerplugin.hpp"
-
+#include "dummytrackingcalibrationwidget.hpp"
 
 DummyEyetrackerPlugin::DummyEyetrackerPlugin()
 {}
@@ -18,7 +18,7 @@ unique_ptr<BaseTrackingCalibrationWidget> DummyEyetrackerPlugin::trackingCalibra
 {
     // TODO use make_unique when available
     return unique_ptr<BaseTrackingCalibrationWidget>
-        { new BaseTrackingCalibrationWidget };
+        { new DummyTrackingCalibrationWidget };
 }
 
 bool DummyEyetrackerPlugin::calibrateTracking(const QVector<EyesPosition> &map)

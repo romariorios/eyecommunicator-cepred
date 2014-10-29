@@ -1,13 +1,14 @@
 #ifndef DUMMYEYETRACKERPLUGIN_HPP
 #define DUMMYEYETRACKERPLUGIN_HPP
 
-#include "../baseeyetrackerplugin.hpp"
+#include <baseeyetrackerplugin.hpp>
 
 #include <dummytrackingcalibrationwidget.hpp>
 
-class DummyEyetrackerPlugin : public BaseEyetrackerPlugin, public QObject
+class DummyEyetrackerPlugin : public QObject, public BaseEyetrackerPlugin
 {
     Q_OBJECT
+    Q_INTERFACES(BaseEyetrackerPlugin)
 
 public:
     DummyEyetrackerPlugin();
