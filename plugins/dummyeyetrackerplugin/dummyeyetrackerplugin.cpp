@@ -4,6 +4,9 @@
 DummyEyetrackerPlugin::DummyEyetrackerPlugin()
 {}
 
+DummyEyetrackerPlugin::~DummyEyetrackerPlugin()
+{}
+
 QVector<BaseEyetrackerPlugin::Param> DummyEyetrackerPlugin::availableTrackingParams() const
 {
     return { { "period", "Period" } };

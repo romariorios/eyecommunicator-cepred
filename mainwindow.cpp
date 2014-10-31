@@ -4,9 +4,8 @@
 #include <baseeyetrackerplugin.hpp>
 
 #include <QDebug>
+#include <QFileDialog>
 #include <QPluginLoader>
-
-Q_IMPORT_PLUGIN(dummyeyetrackerplugin)
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -14,7 +13,13 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    qDebug() << QPluginLoader::staticInstances();
+    auto pluginFile = QFileDialog::getOpenFileName();
+    QPluginLoader loader{pluginFile};
+
+    auto dummy = qobject_cast<BaseEyetrackerPlugin *>(loader.instance());
+    for (auto param : dummy->availableTrackingParams()) {
+        qDebug() << param.fullName << " (" << param.name << ")";
+    }
 }
 
 MainWindow::~MainWindow()

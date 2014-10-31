@@ -23,12 +23,9 @@ add_executable(
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR})
 add_subdirectory(plugins)
-link_directories(
-    ${CMAKE_CURRENT_BINARY_DIR}/plugins/dummyeyetrackerplugin)
 
 target_link_libraries(
     eyecommunicator
-    dummyeyetrackerplugin
     Qt5::Widgets)
 
 install(
