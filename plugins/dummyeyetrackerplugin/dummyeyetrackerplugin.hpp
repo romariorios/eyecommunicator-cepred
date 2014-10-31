@@ -3,12 +3,11 @@
 
 #include <baseeyetrackerplugin.hpp>
 
-#include <dummytrackingcalibrationwidget.hpp>
-
 class DummyEyetrackerPlugin : public QObject, public BaseEyetrackerPlugin
 {
     Q_OBJECT
     Q_INTERFACES(BaseEyetrackerPlugin)
+    Q_PLUGIN_METADATA(IID "br.ufba.dcc.eyecommunicator-cepred.plugins.dummy")
 
 public:
     DummyEyetrackerPlugin();
@@ -28,7 +27,6 @@ signals:
 
 private:
     long _period;
-    DummyTrackingCalibrationWidget _calibrationWidget;
 };
 
 #endif // DUMMYEYETRACKERPLUGIN_HPP
