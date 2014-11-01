@@ -33,6 +33,10 @@ void Eyetracker::setCurrentPlugin(int index)
     }
 
     if (_curPlugin) {
+        disconnect(
+            _curPlugin->qObject(), SIGNAL(eyesPositionChanged(EyesPosition)),
+            this, SIGNAL(eyesPositionChanged(EyesPosition)));
+
         _pluginsFound[_curPluginIndex].unload();
         _curPlugin->stopTracking();
     }
@@ -46,6 +50,10 @@ void Eyetracker::setCurrentPlugin(int index)
 
     _curPlugin = qobject_cast<BaseEyetrackerPlugin *>(_pluginsFound[index].instance());
     _curPluginIndex = index;
+
+    connect(
+        _curPlugin->qObject(), SIGNAL(eyesPositionChanged(EyesPosition)),
+        this, SIGNAL(eyesPositionChanged(EyesPosition)));
 }
 
 QVector<BaseEyetrackerPlugin::Param> Eyetracker::params() const

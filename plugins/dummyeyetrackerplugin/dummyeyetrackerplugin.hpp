@@ -24,11 +24,15 @@ public:
     bool startTracking();
     bool stopTracking();
 
+protected:
+    void timerEvent(QTimerEvent *e);
+
 signals:
     void eyesPositionChanged(const EyesPosition &pos);
 
 private:
-    long _period;
+    int _period;
+    int _curTimerId = 0;
 };
 
 #endif // DUMMYEYETRACKERPLUGIN_HPP

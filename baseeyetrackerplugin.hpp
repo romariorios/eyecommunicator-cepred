@@ -20,6 +20,14 @@ public:
     {
         QString name;
         QString fullName;
+        enum {
+            Invalid = 0,
+            Int,
+            Float,
+            String,
+            Set
+        } type;
+        QVector<QVariant> values;
     };
 
     virtual ~BaseEyetrackerPlugin() {}
@@ -32,6 +40,8 @@ public:
 
     virtual bool startTracking() = 0;
     virtual bool stopTracking() = 0;
+
+    inline const QObject *qObject() const { return dynamic_cast<const QObject *>(this); }
 
 signals:
     virtual void eyesPositionChanged(const EyesPosition &pos) = 0;

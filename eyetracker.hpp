@@ -28,6 +28,7 @@ public:
     bool calibrate(const QVector<EyesPosition> &map);
 
     QVector<QString> pluginsFound() const;
+    inline bool isPluginSet() const { return _curPlugin; }
 
 signals:
     void eyesPositionChanged(const EyesPosition &pos);
