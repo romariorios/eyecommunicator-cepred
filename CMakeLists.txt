@@ -16,6 +16,7 @@ qt5_wrap_ui(
 
 add_executable(
     eyecommunicator
+    eyetracker.cpp
     main.cpp
     mainwindow.cpp
     ${eyecommunicator_ui})

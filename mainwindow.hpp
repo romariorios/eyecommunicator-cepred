@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include <eyetracker.hpp>
+
 namespace Ui {
 class MainWindow;
 }
@@ -17,6 +19,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    Eyetracker _eyetracker;
 };
 
 #endif // MAINWINDOW_HPP

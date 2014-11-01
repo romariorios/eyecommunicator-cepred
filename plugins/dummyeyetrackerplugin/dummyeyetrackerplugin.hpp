@@ -7,7 +7,9 @@ class DummyEyetrackerPlugin : public QObject, public BaseEyetrackerPlugin
 {
     Q_OBJECT
     Q_INTERFACES(BaseEyetrackerPlugin)
-    Q_PLUGIN_METADATA(IID "br.ufba.dcc.eyecommunicator-cepred.plugins.dummy")
+    Q_PLUGIN_METADATA(
+        IID "br.ufba.dcc.eyecommunicator-cepred.plugins.dummy"
+        FILE "dummyeyetrackerplugin.json")
 
 public:
     DummyEyetrackerPlugin();
