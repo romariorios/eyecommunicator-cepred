@@ -11,10 +11,9 @@ void Eyetracker::addPluginPath(const QDir &dir)
 {
     for (auto f : dir.entryList(QDir::Files)) {
         auto absPath = dir.absoluteFilePath(f);
-        QPluginLoader loader{dir.absoluteFilePath(f)};
-        auto plugin = qobject_cast<BaseEyetrackerPlugin *>(loader.instance());
+        QPluginLoader loader{absPath};
 
-        if (plugin) {
+        if (loader.load()) {
             loader.unload();
             _pluginsFound.emplace_back(absPath);
         }
@@ -22,6 +21,8 @@ void Eyetracker::addPluginPath(const QDir &dir)
 
     if (_pluginsFound.size() == 1) {
         setCurrentPlugin(0);
+    } else {
+        setCurrentPlugin(-1);
     }
 }
 
@@ -60,7 +61,7 @@ bool Eyetracker::start(const QVariantHash &params)
 {
     return _curPlugin &&
         _curPlugin->setTrackingParams(params) &&
-            _curPlugin->startTracking();
+        _curPlugin->startTracking();
 }
 
 unique_ptr<BaseTrackingCalibrationWidget> Eyetracker::calibrationWidget() const
@@ -82,7 +83,8 @@ QVector<QString> Eyetracker::pluginsFound() const
     QVector<QString> res;
 
     for (auto &p : _pluginsFound) {
-        res << p.metaData()["displayName"].toString();
+        auto metadata = p.metaData()["MetaData"].toObject();
+        res << metadata["displayName"].toString();
     }
 
     return res;
