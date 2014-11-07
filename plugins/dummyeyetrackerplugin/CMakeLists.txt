@@ -1,5 +1,3 @@
-set(CMAKE_CXX_FLAGS "-fPIE ${CMAKE_CXX_FLAGS}")
-
 qt5_wrap_ui(
     plugin_ui
     dummytrackingcalibrationwidget.ui)
@@ -12,4 +10,9 @@ add_library(
 
 install(
     TARGETS dummyeyetrackerplugin
-    LIBRARY DESTINATION lib)
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)
+
+target_link_libraries(
+    dummyeyetrackerplugin
+    Qt5::Widgets)
