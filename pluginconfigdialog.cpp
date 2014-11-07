@@ -63,7 +63,7 @@ PluginConfigDialog::PluginConfigDialog(
             fieldLayout->addWidget(paramWidget);
         }
 
-        _fields[p.name] = { paramWidget, p.type };
+        _fields[p.name] = paramWidget;
     }
 }
 
@@ -76,8 +76,27 @@ PluginConfigDialog::~PluginConfigDialog()
 
 void PluginConfigDialog::accept()
 {
-    for (auto f : _fields) {
-        qDebug() << f;
+    for (auto k : _fields.keys()) {
+        auto f = _fields[k];
+        QVariant val;
+
+        auto spinBox = qobject_cast<QSpinBox *>(f);
+        if (spinBox)
+            val = spinBox->value();
+
+        auto doubleSpinBox = qobject_cast<QDoubleSpinBox *>(f);
+        if (doubleSpinBox)
+            val = doubleSpinBox->value();
+
+        auto lineEdit = qobject_cast<QLineEdit *>(f);
+        if (lineEdit)
+            val = lineEdit->text();
+
+        auto comboBox = qobject_cast<QComboBox *>(f);
+        if (comboBox)
+            val = comboBox->currentIndex();
+
+        _result[k] = val;
     }
 
     return QDialog::accept();

@@ -26,7 +26,7 @@ public slots:
 
 private:
     Ui::PluginConfigDialog *ui;
-    QHash<QString, QPair<QWidget *, BaseEyetrackerPlugin::Param::Type>> _fields;
+    QHash<QString, QWidget *> _fields;
     QVariantHash _result;
 };
 
