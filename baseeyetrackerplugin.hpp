@@ -20,7 +20,7 @@ public:
     {
         QString name;
         QString fullName;
-        enum {
+        enum Type {
             Invalid = 0,
             Int,
             Float,

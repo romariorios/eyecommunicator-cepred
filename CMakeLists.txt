@@ -12,13 +12,15 @@ include_directories(
 
 qt5_wrap_ui(
     eyecommunicator_ui
-    mainwindow.ui)
+    mainwindow.ui
+    pluginconfigdialog.ui)
 
 add_executable(
     eyecommunicator
     eyetracker.cpp
     main.cpp
     mainwindow.cpp
+    pluginconfigdialog.cpp
     ${eyecommunicator_ui})
 
 include_directories(
