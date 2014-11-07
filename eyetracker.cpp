@@ -2,6 +2,8 @@
 
 #include <QPluginLoader>
 
+#include "pluginconfigdialog.hpp"
+
 Eyetracker::Eyetracker(QObject *parent) :
     QObject(parent)
 {
@@ -69,7 +71,17 @@ bool Eyetracker::start(const QVariantHash &params)
 {
     return _curPlugin &&
         _curPlugin->setTrackingParams(params) &&
-        _curPlugin->startTracking();
+            _curPlugin->startTracking();
+}
+
+bool Eyetracker::start()
+{
+    if (!_curPlugin)
+        return false;
+
+    PluginConfigDialog d{params()};
+
+    return d.exec() && start(d.result());
 }
 
 unique_ptr<BaseTrackingCalibrationWidget> Eyetracker::calibrationWidget() const

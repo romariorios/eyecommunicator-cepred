@@ -39,7 +39,7 @@ PluginConfigDialog::PluginConfigDialog(
         {
             auto spinBox = new QDoubleSpinBox{this};
             paramWidget = spinBox;
-            spinBox->setRange(p.values[0].toInt(), p.values[1].toInt());
+            spinBox->setRange(p.values[0].toFloat(), p.values[1].toFloat());
             fieldLayout->addWidget(spinBox);
             break;
         }

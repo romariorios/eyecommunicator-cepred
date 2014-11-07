@@ -9,7 +9,7 @@
 #include <QPluginLoader>
 #include <QVector>
 
-#include <baseeyetrackerplugin.hpp>
+#include "baseeyetrackerplugin.hpp"
 
 using std::deque;
 
@@ -22,13 +22,16 @@ public:
     void addPluginPath(const QDir &dir);
     void setCurrentPlugin(int index);
     QVector<BaseEyetrackerPlugin::Param> params() const;
-    bool start(const QVariantHash &params);
 
     unique_ptr<BaseTrackingCalibrationWidget> calibrationWidget() const;
     bool calibrate(const QVector<EyesPosition> &map);
 
     QVector<QString> pluginsFound() const;
     inline bool isPluginSet() const { return _curPlugin; }
+
+public slots:
+    bool start(const QVariantHash &params);
+    bool start();
 
 signals:
     void eyesPositionChanged(const EyesPosition &pos);
