@@ -50,6 +50,8 @@ bool DummyEyetrackerPlugin::stopTracking()
 void DummyEyetrackerPlugin::timerEvent(QTimerEvent *e)
 {
     if (e->timerId() == _curTimerId) {
-        emit eyesPositionChanged({{1.0, 1.0}, {1.0, 1.0}, {1.0, 1.0}});
+        auto pos = QCursor::pos();
+
+        emit eyesPositionChanged({pos, pos, pos});
     }
 }
