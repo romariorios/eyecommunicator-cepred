@@ -49,4 +49,20 @@ signals:
 
 Q_DECLARE_INTERFACE(BaseEyetrackerPlugin, "br.ufba.dcc.eyecommunicator-cepred.BaseEyetrackerPlugin")
 
+#define EYETRACKER_PLUGIN_INTERFACE(className)\
+    Q_INTERFACES(BaseEyetrackerPlugin)\
+\
+public:\
+    className##EyetrackerPlugin();\
+    ~className##EyetrackerPlugin();\
+\
+    QVector<Param> availableTrackingParams() const;\
+    bool setTrackingParams(const QVariantHash &params);\
+\
+    unique_ptr<BaseTrackingCalibrationWidget> trackingCalibrationWidget() const;\
+    bool calibrateTracking(const QVector<EyesPosition> &map);\
+\
+    bool startTracking();\
+    bool stopTracking();
+
 #endif // BASEEYETRACKERPLUGIN_HPP

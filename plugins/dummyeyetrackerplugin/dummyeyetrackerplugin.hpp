@@ -6,29 +6,17 @@
 class DummyEyetrackerPlugin : public QObject, public BaseEyetrackerPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(BaseEyetrackerPlugin)
     Q_PLUGIN_METADATA(
         IID "br.ufba.dcc.eyecommunicator-cepred.plugins.dummy"
         FILE "dummyeyetrackerplugin.json")
 
-public:
-    DummyEyetrackerPlugin();
-    ~DummyEyetrackerPlugin();
-
-    QVector<Param> availableTrackingParams() const;
-    bool setTrackingParams(const QVariantHash &params);
-
-    unique_ptr<BaseTrackingCalibrationWidget> trackingCalibrationWidget() const;
-    bool calibrateTracking(const QVector<EyesPosition> &map);
-
-    bool startTracking();
-    bool stopTracking();
-
-protected:
-    void timerEvent(QTimerEvent *e);
+    EYETRACKER_PLUGIN_INTERFACE(Dummy)
 
 signals:
     void eyesPositionChanged(const EyesPosition &pos);
+
+protected:
+    void timerEvent(QTimerEvent *e);
 
 private:
     int _period;
