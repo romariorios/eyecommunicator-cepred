@@ -14,7 +14,7 @@ QVector<BaseEyetrackerPlugin::Param> DummyEyetrackerPlugin::availableTrackingPar
     return {
         { "period", "Period (ms)", Param::Int, { 10 , 500 } },
         { "test1", "This will not affect anything", Param::Float, { 0.1, 0.9 } },
-        { "test2", "This will also not affect anything", Param::String, {} },
+        { "test2", "This will also not affect anything", Param::String },
         { "test3", "This", Param::Set, { "Will", "not", "affect", "anything" } }
     };
 }

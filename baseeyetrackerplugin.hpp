@@ -28,6 +28,7 @@ public:
             Set
         } type;
         QVector<QVariant> values;
+        QVariant defaultValue;
     };
 
     virtual ~BaseEyetrackerPlugin() {}

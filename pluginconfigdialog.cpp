@@ -32,6 +32,7 @@ PluginConfigDialog::PluginConfigDialog(
             auto spinBox = new QSpinBox{this};
             paramWidget = spinBox;
             spinBox->setRange(p.values[0].toInt(), p.values[1].toInt());
+            spinBox->setValue(p.defaultValue.toInt());
             fieldLayout->addWidget(spinBox);
             break;
         }
@@ -40,13 +41,18 @@ PluginConfigDialog::PluginConfigDialog(
             auto spinBox = new QDoubleSpinBox{this};
             paramWidget = spinBox;
             spinBox->setRange(p.values[0].toFloat(), p.values[1].toFloat());
+            spinBox->setValue(p.defaultValue.toFloat());
             fieldLayout->addWidget(spinBox);
             break;
         }
         case BaseEyetrackerPlugin::Param::String:
-            paramWidget = new QLineEdit{this};
-            fieldLayout->addWidget(paramWidget);
+        {
+            auto lineEdit = new QLineEdit{this};
+            paramWidget = lineEdit;
+            lineEdit->setText(p.defaultValue.toString());
+            fieldLayout->addWidget(lineEdit);
             break;
+        }
         case BaseEyetrackerPlugin::Param::Set:
         {
             auto comboBox = new QComboBox{this};
@@ -54,6 +60,7 @@ PluginConfigDialog::PluginConfigDialog(
             for (auto value : p.values) {
                 comboBox->addItem(value.toString());
             }
+            comboBox->setCurrentIndex(p.defaultValue.toInt());
 
             fieldLayout->addWidget(comboBox);
             break;
