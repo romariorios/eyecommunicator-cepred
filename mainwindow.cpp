@@ -37,6 +37,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(
         ui->actionIniciarRastreamento, SIGNAL(triggered()),
         &_eyetracker, SLOT(start()));
+    connect(ui->actionCalibrarRastreamento, &QAction::triggered, [this]()
+    {
+        // TODO usar widget de rastreamento para plugins que têm
+        _eyetracker.calibrate({});
+    });
 }
 
 MainWindow::~MainWindow()
