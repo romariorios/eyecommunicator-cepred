@@ -3,3 +3,4 @@ if(OpenCV_FOUND)
 endif()
 
 add_subdirectory(dummyeyetrackerplugin)
+add_subdirectory(gazepointeyetrackerplugin)
