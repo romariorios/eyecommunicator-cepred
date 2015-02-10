@@ -21,7 +21,7 @@ tableView::~tableView()
 
 void tableView::setTable(table tb)
 {
-    this->tableData=tb;
+    this->tableData=tb; //t
 }
 
 void tableView::paintEvent(QPaintEvent *ev)
