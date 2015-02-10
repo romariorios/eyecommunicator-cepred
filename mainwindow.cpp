@@ -20,6 +20,12 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->actionStart_tracking, SIGNAL(triggered()),
         &_eyetracker, SLOT(start()));
 
+    connect(ui->actionCalibrate, &QAction::triggered, [this]()
+    {
+        // TODO use calibration widget for engines that require it
+        _eyetracker.calibrate({});
+    });
+
     connect(&_eyetracker, &Eyetracker::eyesPositionChanged, [](const EyesPosition &pos)
     {
         qDebug() << "Gaze:" << pos.gaze << "Left:" << pos.leftEye << "Right:" << pos.rightEye;

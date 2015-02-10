@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>400</width>
-     <height>27</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuEyetracker">
@@ -28,6 +28,7 @@
      <string>Eyetracker</string>
     </property>
     <addaction name="actionStart_tracking"/>
+    <addaction name="actionCalibrate"/>
    </widget>
    <addaction name="menuEyetracker"/>
   </widget>
@@ -43,6 +44,11 @@
   <action name="actionStart_tracking">
    <property name="text">
     <string>Start tracking</string>
+   </property>
+  </action>
+  <action name="actionCalibrate">
+   <property name="text">
+    <string>Calibrate</string>
    </property>
   </action>
  </widget>
