@@ -69,9 +69,12 @@ QVector<BaseEyetrackerPlugin::Param> Eyetracker::params() const
 
 bool Eyetracker::start(const QVariantHash &params)
 {
-    return _curPlugin &&
+    if (_hasStarted && !_curPlugin->stopTracking())
+        return false;
+
+    return _hasStarted = _curPlugin &&
         _curPlugin->setTrackingParams(params) &&
-            _curPlugin->startTracking();
+        _curPlugin->startTracking();
 }
 
 bool Eyetracker::start()
@@ -82,6 +85,15 @@ bool Eyetracker::start()
     PluginConfigDialog d{params()};
 
     return d.exec() && start(d.result());
+}
+
+bool Eyetracker::stop()
+{
+    if (!_curPlugin || !_hasStarted || !_curPlugin->stopTracking())
+        return false;
+
+    _hasStarted = false;
+    return true;
 }
 
 unique_ptr<BaseTrackingCalibrationWidget> Eyetracker::calibrationWidget() const

@@ -32,6 +32,7 @@ public:
 public slots:
     bool start(const QVariantHash &params);
     bool start();
+    bool stop();
 
 signals:
     void eyesPositionChanged(const EyesPosition &pos);
@@ -40,6 +41,7 @@ private:
     deque<QPluginLoader> _pluginsFound;
     BaseEyetrackerPlugin *_curPlugin = nullptr;
     int _curPluginIndex = -1; // relies on _pluginsFound never having an item removed
+    bool _hasStarted = false;
 };
 
 #endif // EYETRACKER_HPP
