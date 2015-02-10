@@ -19,15 +19,15 @@ class Eyetracker : public QObject
 public:
     explicit Eyetracker(QObject *parent = 0);
 
-    void addPluginPath(const QDir &dir);
-    void setCurrentPlugin(int index);
+    void addPluginPath(const QDir &dir); // adiciona pasta dos plugins
+    void setCurrentPlugin(int index); // seleciona plugin
     QVector<BaseEyetrackerPlugin::Param> params() const;
 
     unique_ptr<BaseTrackingCalibrationWidget> calibrationWidget() const;
     bool calibrate(const QVector<EyesPosition> &map);
 
     QVector<QString> pluginsFound() const;
-    inline bool isPluginSet() const { return _curPlugin; }
+    inline bool isPluginSet() const { return _curPlugin; } // verifica se existe um plugin selecionado
 
 public slots:
     bool start(const QVariantHash &params);
