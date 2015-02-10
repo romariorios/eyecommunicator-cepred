@@ -1,6 +1,9 @@
 #include "dummyeyetrackerplugin.hpp"
 #include "dummytrackingcalibrationwidget.hpp"
 
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QPoint>
 #include <QTimerEvent>
 
 DummyEyetrackerPlugin::DummyEyetrackerPlugin()
@@ -51,7 +54,12 @@ void DummyEyetrackerPlugin::timerEvent(QTimerEvent *e)
 {
     if (e->timerId() == _curTimerId) {
         auto pos = QCursor::pos();
+        auto screen = QApplication::desktop()->screenGeometry();
+        QPointF normPos{
+            double{pos.x()} / double{screen.width()},
+            double{pos.y()} / double{screen.height()}
+        };
 
-        emit eyesPositionChanged({pos, pos, pos});
+        emit eyesPositionChanged({normPos, normPos, normPos});
     }
 }

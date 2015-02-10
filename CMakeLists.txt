@@ -7,13 +7,15 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
 find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Multimedia REQUIRED)
 include_directories(
     ${Qt5Widgets_INCLUDE_DIRS})
 
 qt5_wrap_ui(
     eyecommunicator_ui
     mainwindow.ui
-    pluginconfigdialog.ui)
+    pluginconfigdialog.ui
+    tableview.ui)
 
 add_executable(
     eyecommunicator
@@ -21,6 +23,8 @@ add_executable(
     main.cpp
     mainwindow.cpp
     pluginconfigdialog.cpp
+    table.cpp
+    tableview.cpp
     ${eyecommunicator_ui})
 
 include_directories(
@@ -29,6 +33,7 @@ add_subdirectory(plugins)
 
 target_link_libraries(
     eyecommunicator
+    Qt5::Multimedia
     Qt5::Widgets)
 
 install(
