@@ -2,6 +2,7 @@
 #include "ui_tableview.h"
 #include <QtGui>
 #include <QSound>
+#include <QSvgRenderer>
 
 tableView::tableView(QWidget *parent) :
     QDialog(parent),
@@ -21,7 +22,7 @@ tableView::~tableView()
 
 void tableView::setTable(table tb)
 {
-    this->tableData=tb; //t
+    this->tableData=tb;
 }
 
 void tableView::paintEvent(QPaintEvent *ev)
@@ -45,6 +46,7 @@ void tableView::paintEvent(QPaintEvent *ev)
     for(int i=0;i<this->tableData.count();i++)
     {
         im=this->tableData.getImage(i);
+        QRectF tam(0,0,im.width(),im.height());
         estojo.drawPixmap(pos,im,tam);
         x+=wi;
         if(x>=w-1-dx)

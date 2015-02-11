@@ -8,6 +8,7 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Multimedia REQUIRED)
+find_package(Qt5Svg REQUIRED)
 include_directories(
     ${Qt5Widgets_INCLUDE_DIRS})
 
@@ -34,7 +35,8 @@ add_subdirectory(plugins)
 target_link_libraries(
     eyecommunicator
     Qt5::Multimedia
-    Qt5::Widgets)
+    Qt5::Widgets
+    Qt5::Svg )
 
 install(
     TARGETS eyecommunicator RUNTIME

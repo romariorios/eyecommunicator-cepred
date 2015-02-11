@@ -1,4 +1,7 @@
 #include "table.h"
+#include <QPainter>
+#include <QPixmap>
+#include <QSvgRenderer>
 
 table::table()
 {
@@ -13,7 +16,21 @@ table::~table()
 void table::addImg(QString imgPth)
 {
     this->imgPath.push_back(imgPth);
-    this->imgVec.push_back(QPixmap(imgPth));
+
+    if(imgPth.right(3)=="svg")
+    {
+        QPixmap px(800,800);
+        px.fill(QColor(255,255,255));
+        QPainter pai(&px);
+        QSvgRenderer renderer(imgPth);
+        renderer.render(&pai);
+        this->imgVec.push_back(px);
+
+    }
+    else
+    {
+        this->imgVec.push_back(QPixmap(imgPth));
+    }
 }
 
 void table::delImg(int row)
