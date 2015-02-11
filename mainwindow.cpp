@@ -13,7 +13,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     _eyetracker.addPluginPath(QFileDialog::getExistingDirectory());
 
+
     ui->setupUi(this);
+    if(_eyetracker.isPluginSet())
+        this->ui->menuRastreamento->setEnabled(true);
+
     model = new QFileSystemModel;
     model->setFilter(QDir::AllDirs|QDir::NoDotDot|QDir::NoDot);
     model->setRootPath("");
