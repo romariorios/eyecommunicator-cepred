@@ -4,6 +4,8 @@
 #include "tableview.h"
 
 #include <QFileDialog>
+#include <QSettings>
+#include <QVBoxLayout>
 
 using namespace std;
 
@@ -11,9 +13,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    _eyetracker.addPluginPath(QFileDialog::getExistingDirectory());
-
-
     ui->setupUi(this);
     if(_eyetracker.isPluginSet())
         this->ui->menuRastreamento->setEnabled(true);
@@ -46,6 +45,18 @@ MainWindow::MainWindow(QWidget *parent) :
         // TODO usar widget de rastreamento para plugins que têm
         _eyetracker.calibrate({});
     });
+
+    show();
+
+    auto &&pluginPaths = QSettings{}.value("pluginPaths", QStringList{}).toStringList();
+    for (auto &&path : pluginPaths) {
+        _eyetracker.addPluginPath(path);
+    }
+
+    auto selectedPlugin = QSettings{}.value("selectedPlugin", -1).toInt();
+    _eyetracker.setCurrentPlugin(selectedPlugin);
+    if (!_eyetracker.start())
+        on_actionSelPlugin_triggered();
 }
 
 MainWindow::~MainWindow()
@@ -149,4 +160,44 @@ void MainWindow::on_run_clicked()
      tb->setPt({ e.gaze.x() * tb->width(), e.gaze.y() * tb->height() });
  });
  connect(tb, SIGNAL(finished(int)), tb, SLOT(deleteLater()));
+}
+
+void MainWindow::on_actionAdcDiretorio_triggered()
+{
+    auto dir = QFileDialog::getExistingDirectory();
+    if (dir.isEmpty())
+        return;
+
+    QSettings s;
+    auto &&pluginPaths = s.value("pluginPaths", QStringList{}).toStringList();
+    pluginPaths << dir;
+    s.setValue("pluginPaths", pluginPaths);
+
+    _eyetracker.addPluginPath(dir);
+}
+
+void MainWindow::on_actionSelPlugin_triggered()
+{
+    QDialog d;
+    QVBoxLayout l{&d};
+    QListWidget plugins;
+    QPushButton select{"Selecionar"};
+
+    d.setWindowTitle("Selecionar plugin");
+    l.addWidget(&plugins);
+    l.addWidget(&select);
+
+    for (auto &&plugin : _eyetracker.pluginsFound())
+        plugins.addItem(plugin);
+
+    connect(&select, &QPushButton::clicked, &d, &QDialog::close);
+    connect(&select, &QPushButton::clicked, [&]()
+    {
+        auto row = plugins.currentIndex().row();
+        _eyetracker.setCurrentPlugin(row);
+        if (_eyetracker.start())
+            QSettings{}.setValue("selectedPlugin", row);
+    });
+
+    d.exec();
 }

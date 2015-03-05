@@ -39,6 +39,10 @@ private slots:
 
     void on_run_clicked();
 
+    void on_actionAdcDiretorio_triggered();
+
+    void on_actionSelPlugin_triggered();
+
 private:
     Ui::MainWindow *ui;
     Eyetracker _eyetracker;

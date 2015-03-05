@@ -151,17 +151,22 @@
     <addaction name="actionSobre_o_projeto"/>
    </widget>
    <widget class="QMenu" name="menuRastreamento">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
     <property name="title">
      <string>Rastreamento</string>
     </property>
     <addaction name="actionIniciarRastreamento"/>
     <addaction name="actionCalibrarRastreamento"/>
    </widget>
+   <widget class="QMenu" name="menuConfigurar">
+    <property name="title">
+     <string>Configurar</string>
+    </property>
+    <addaction name="actionAdcDiretorio"/>
+    <addaction name="actionSelPlugin"/>
+   </widget>
    <addaction name="menuArquivo"/>
    <addaction name="menuRastreamento"/>
+   <addaction name="menuConfigurar"/>
    <addaction name="menuAjuda"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -408,6 +413,9 @@
    </property>
   </action>
   <action name="actionIniciarRastreamento">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
    <property name="enabled">
     <bool>true</bool>
    </property>
@@ -418,6 +426,16 @@
   <action name="actionCalibrarRastreamento">
    <property name="text">
     <string>Calibrar...</string>
+   </property>
+  </action>
+  <action name="actionAdcDiretorio">
+   <property name="text">
+    <string>Adicionar diretório de busca de plugins..</string>
+   </property>
+  </action>
+  <action name="actionSelPlugin">
+   <property name="text">
+    <string>Selecionar plugin...</string>
    </property>
   </action>
  </widget>
