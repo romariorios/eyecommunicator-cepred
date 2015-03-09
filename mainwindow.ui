@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>793</width>
-    <height>553</height>
+    <width>826</width>
+    <height>549</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -63,67 +63,6 @@
       </item>
      </layout>
     </item>
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout_4">
-      <item>
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Seleciodadas</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QListWidget" name="listSelected">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>100</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="dragDropMode">
-         <enum>QAbstractItemView::DragDrop</enum>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>50</width>
-          <height>50</height>
-         </size>
-        </property>
-        <property name="viewMode">
-         <enum>QListView::IconMode</enum>
-        </property>
-        <property name="wordWrap">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCommandLinkButton" name="run">
-        <property name="maximumSize">
-         <size>
-          <width>100</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Segoe UI</family>
-          <pointsize>18</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Go</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -131,7 +70,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>793</width>
+     <width>826</width>
      <height>21</height>
     </rect>
    </property>
@@ -370,6 +309,107 @@
          <attribute name="headerVisible">
           <bool>false</bool>
          </attribute>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget_3">
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_3">
+    <layout class="QVBoxLayout" name="verticalLayout_7">
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Seleciodadas</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QListWidget" name="listSelected">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>1024</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="dragDropMode">
+          <enum>QAbstractItemView::DragDrop</enum>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>50</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="resizeMode">
+          <enum>QListView::Adjust</enum>
+         </property>
+         <property name="layoutMode">
+          <enum>QListView::Batched</enum>
+         </property>
+         <property name="viewMode">
+          <enum>QListView::IconMode</enum>
+         </property>
+         <property name="wordWrap">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCommandLinkButton" name="run">
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>15</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Inicia</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCommandLinkButton" name="random">
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Aleatório</string>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>15</width>
+           <height>20</height>
+          </size>
+         </property>
         </widget>
        </item>
       </layout>

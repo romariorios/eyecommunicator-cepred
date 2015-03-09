@@ -16,7 +16,8 @@ qt5_wrap_ui(
     eyecommunicator_ui
     mainwindow.ui
     pluginconfigdialog.ui
-    tableview.ui)
+    tableview.ui
+    memorygame.ui)
 
 add_executable(
     eyecommunicator
@@ -26,6 +27,7 @@ add_executable(
     pluginconfigdialog.cpp
     table.cpp
     tableview.cpp
+    memorygame.cpp
     ${eyecommunicator_ui})
 
 include_directories(

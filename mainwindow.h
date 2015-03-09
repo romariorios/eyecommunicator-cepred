@@ -39,6 +39,8 @@ private slots:
 
     void on_run_clicked();
 
+    void on_random_clicked();
+
 private:
     Ui::MainWindow *ui;
     Eyetracker _eyetracker;

@@ -96,11 +96,14 @@ void tableView::showEvent(QShowEvent *sev)
 void tableView::closeEvent(QCloseEvent *cev)
 {
     this->ticTac->stop();
+    this->disconnect();
+
 }
 
 void tableView::hideEvent(QHideEvent *hev)
 {
     this->ticTac->stop();
+    this->disconnect();
 }
 
 void tableView::on_ticTacTimeOver()

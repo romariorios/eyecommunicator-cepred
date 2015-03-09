@@ -15,7 +15,9 @@ table::~table()
 
 void table::addImg(QString imgPth)
 {
-    this->imgPath.push_back(imgPth);
+    tableCell c;
+    c.imgPath=imgPth;
+    c.id=this->cell.size();
 
     if(imgPth.right(3)=="svg")
     {
@@ -24,19 +26,43 @@ void table::addImg(QString imgPth)
         QPainter pai(&px);
         QSvgRenderer renderer(imgPth);
         renderer.render(&pai);
-        this->imgVec.push_back(px);
+        c.img=px;
 
     }
     else
     {
-        this->imgVec.push_back(QPixmap(imgPth));
+        c.img=QPixmap(imgPth);
     }
+    this->cell.push_back(c);
+}
+
+void table::addImg(QString imgPth, int id)
+{
+    tableCell c;
+    c.imgPath=imgPth;
+    c.id=id;
+
+    if(imgPth.right(3)=="svg")
+    {
+        QPixmap px(800,800);
+        px.fill(QColor(255,255,255));
+        QPainter pai(&px);
+        QSvgRenderer renderer(imgPth);
+        renderer.render(&pai);
+        c.img=px;
+
+    }
+    else
+    {
+        c.img=QPixmap(imgPth);
+    }
+    this->cell.push_back(c);
+
 }
 
 void table::delImg(int row)
 {
-    this->imgPath.erase(imgPath.begin()+row);
-    this->imgVec.erase(imgVec.begin()+row);
+    this->cell.erase(cell.begin()+row);
 }
 QSize table::getGridSize() const
 {
@@ -50,7 +76,7 @@ void table::setGridSize(const QSize &value)
 
 QPixmap table::getImage(int row)
 {
-    return this->imgVec[row];
+    return this->cell[row].img;
 }
 int table::getGridType() const
 {
