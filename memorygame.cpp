@@ -148,7 +148,7 @@ void memoryGame::on_ticTacTimeOver()
                     }
                     else if(i2nd<0) // selecting the second card
                     {
-                        if(i!=i1st) // desconsidering double selecting
+                        if(i!=i1st) // desconsidering double selecting the same card
                         {
                             this->i2nd=i;
                             // verify if was matched

@@ -6,6 +6,8 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <algorithm>
+#include <QDesktopWidget>
 
 using namespace std;
 
@@ -155,25 +157,29 @@ void MainWindow::on_run_clicked()
     if(this->ui->type->currentIndex()==3 && N%2)         // if the gridsize is even in memory game
     {
         int ret = QMessageBox::information(this, tr("Erro na escolha da grade!"),
-                                       tr("Só é possível escolher um número de cartas pares\n"
-                                          "no jogo de memória."),
-                                       QMessageBox::Ok);
+                                           tr("Só é possível escolher um número de cartas pares\n"
+                                              "no jogo de memória."),
+                                           QMessageBox::Ok);
         return;
     }
+    QDesktopWidget *widget = QApplication::desktop();
+    QRect rect = widget->screenGeometry(0);             // get actual size of window
+
     this->selTable.setTimeSel(this->ui->timeSel->value());
     if(this->ui->type->currentIndex()==3)  // memory Game
     {
         memoryGame *mg;
         mg = new memoryGame(this);
         mg->setTable(this->selTable);
+//        mg->show();
+//        mg->move(rect.width()+10, rect.y());
+
         mg->showFullScreen();
         connect(&_eyetracker, &Eyetracker::eyesPositionChanged, [mg](const EyesPosition &e)
         {
             mg->setPt({ e.gaze.x() * mg->width(), e.gaze.y() * mg->height() });
         });
         connect(mg, SIGNAL(finished(int)), mg, SLOT(deleteLater()));
-
-
     }
     else
     {
@@ -181,6 +187,7 @@ void MainWindow::on_run_clicked()
         tableView *tb;
         tb=new tableView(this);
         tb->setTable(this->selTable);
+        tb->move(rect.width()+10, rect.y());
         tb->showFullScreen();
 
         connect(&_eyetracker, &Eyetracker::eyesPositionChanged, [tb](const EyesPosition &e)
@@ -190,8 +197,71 @@ void MainWindow::on_run_clicked()
         connect(tb, SIGNAL(finished(int)), tb, SLOT(deleteLater()));
     }
 }
+void MainWindow::loadImagesDir(QString pth,QStringList *listImg)
+{
+    QDir dir(pth);
+    dir.setFilter(QDir::Files | QDir::NoSymLinks);
+    QFileInfoList list = dir.entryInfoList();
+    for (int i = 0; i < list.size(); ++i){
+        QFileInfo fileInfo = list.at(i);
+        listImg->push_back(fileInfo.filePath());
+    }
+    dir.setFilter(QDir::AllDirs|QDir::NoDotDot|QDir::NoDot);
+    list = dir.entryInfoList();
+    for (int i = 0; i < list.size(); ++i){
+        QFileInfo fileInfo = list.at(i);
+        this->loadImagesDir(fileInfo.filePath(),listImg);
+    }
+
+}
 
 void MainWindow::on_random_clicked()
 {
+    class seleItem{
+    public:
+        QString path;
+        int id;
+    };
+    vector <seleItem> selectedPath;
+    QString pth=QDir::currentPath()+"/Images";
+    if(this->allImagesPath.isEmpty()){
+        this->loadImagesDir(pth,&this->allImagesPath);
+    }
 
+    random_shuffle(allImagesPath.begin(),allImagesPath.end());
+    int N=this->ui->gridCol->value()*this->ui->gridLines->value();
+    if(this->ui->type->currentIndex()==3){   // Memory Game
+        for(int i=0;i<N/2;i++){
+            seleItem it;
+            it.path=this->allImagesPath[i];
+            it.id=i;
+            selectedPath.push_back(it);
+            selectedPath.push_back(it);
+        }
+    }
+    else{
+        for(int i=0;i<N;i++){
+            seleItem it;
+            it.path=this->allImagesPath[i];
+            it.id=i;
+            selectedPath.push_back(it);
+        }
+    }
+
+
+    if(N>selectedPath.size())
+        return;
+
+    random_shuffle(selectedPath.begin(),selectedPath.end());
+    this->ui->listSelected->clear();
+    this->selTable.clearAll();
+
+    for (int i = 0; i < selectedPath.size(); ++i){
+        QFileInfo fileInfo;
+        fileInfo.setFile(selectedPath[i].path);
+        this->ui->listSelected->addItem(fileInfo.baseName());
+        this->ui->listSelected->item(i)->setIcon(QIcon(selectedPath[i].path));
+        this->selTable.addImg(selectedPath[i].path,selectedPath[i].id);
+        this->imgListPath.push_back(selectedPath[i].path);
+    }
 }

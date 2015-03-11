@@ -22,6 +22,7 @@ public:
     void addImg(QString imgPth,int id);
 
     void delImg(int row);
+    void clearAll();
     QSize getGridSize() const;
     void setGridSize(const QSize &value);
     QPixmap getImage(int row);

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QFileSystemModel>
+#include <QStringList>
 #include "table.h"
 
 #include "eyetracker.hpp"
@@ -45,6 +46,8 @@ private:
     Ui::MainWindow *ui;
     Eyetracker _eyetracker;
     void changeTablePar();
+    QStringList allImagesPath;  // all images path for memory game purpose
+    void loadImagesDir(QString pth, QStringList *listImg);
 };
 
 #endif // MAINWINDOW_H

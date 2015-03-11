@@ -64,6 +64,11 @@ void table::delImg(int row)
 {
     this->cell.erase(cell.begin()+row);
 }
+
+void table::clearAll()
+{
+    this->cell.clear();
+}
 QSize table::getGridSize() const
 {
     return gridSize;
