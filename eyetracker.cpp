@@ -39,8 +39,8 @@ void Eyetracker::setCurrentPlugin(int index)
             _curPlugin->qObject(), SIGNAL(eyesPositionChanged(EyesPosition)),
             this, SIGNAL(eyesPositionChanged(EyesPosition)));
 
-        _pluginsFound[_curPluginIndex].unload();
         _curPlugin->stopTracking();
+        _pluginsFound[_curPluginIndex].unload();
     }
 
     if (index < 0 || index >= _pluginsFound.size()) {
