@@ -29,6 +29,7 @@ public:
 
     QVector<QString> pluginsFound() const;
     inline bool isPluginSet() const { return _curPlugin; } // verifica se existe um plugin selecionado
+    inline int curPluginIndex() const { return _curPluginIndex; }
 
 public slots:
     bool start(const QVariantHash &availableParams);

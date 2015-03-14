@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QFileSystemModel>
 #include <QStringList>
+#include <QLabel>
 #include "table.h"
 
 #include "eyetracker.hpp"
@@ -48,7 +49,9 @@ private slots:
 
 private:
     bool tryStart(int pluginIndex, const QVariantHash &params = {});
+    void setPluginState(bool isStarted, int pluginIndex);
 
+    QLabel _statusBarWidget;
     Ui::MainWindow *ui;
     Eyetracker _eyetracker;
     void changeTablePar();

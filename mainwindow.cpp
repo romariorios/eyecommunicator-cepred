@@ -41,6 +41,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->selTable.setGridType(0); // type Grid
     this->selTable.setGridSize(QSize(2,1));
 
+    statusBar()->addWidget(&_statusBarWidget);
+
     connect(
                 ui->actionIniciarRastreamento, SIGNAL(triggered()),
                 &_eyetracker, SLOT(start()));
@@ -333,5 +335,15 @@ bool MainWindow::tryStart(int pluginIndex, const QVariantHash &params)
         s.remove("pluginParams");
     }
 
+    setPluginState(started, pluginIndex);
     return started;
+}
+
+void MainWindow::setPluginState(bool isStarted, int pluginIndex)
+{
+    _statusBarWidget.setText(
+        isStarted?
+            "Plugin carregado: " + _eyetracker.pluginsFound()[pluginIndex] :
+            "NENHUM PLUGIN CARREGADO");
+    ui->run->setEnabled(isStarted);
 }
