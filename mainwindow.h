@@ -5,6 +5,7 @@
 #include <QFileSystemModel>
 #include <QStringList>
 #include "table.h"
+#include "memorygame.h"
 
 #include "eyetracker.hpp"
 
@@ -48,6 +49,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    //memoryGame mg;
     Eyetracker _eyetracker;
     void changeTablePar();
     QStringList allImagesPath;  // all images path for memory game purpose

@@ -3,6 +3,9 @@
 #include <QDialog>
 #include "table.h"
 #include <vector>
+#include <QPixmap>
+#include <QSound>
+
 using namespace std;
 
 namespace Ui {
@@ -17,6 +20,7 @@ public:
     explicit memoryGame(QWidget *parent = 0);
     ~memoryGame();
     void setTable(table tb);
+    void setSize();
 
 private:
     Ui::memoryGame *ui;
@@ -33,8 +37,11 @@ private:
     vector <bool> matched;  // vector of the cards matched
     double memoTime;        // timesteps to memorizing wrong cards
     bool memoStart;         // iniciates timesteps for memorizing wrong cards
-    void finished();        // Wow the game!
+    void fini();        // Wow the game!
     QMovie *movie;
+    QPixmap backGround;     // backgroung image
+    QPixmap cardBack;       // back of the cards in memory game
+    QSound *selectedSound;        // sound of selected image
 
 protected:
     void paintEvent(QPaintEvent *ev);

@@ -10,6 +10,7 @@
 #include <QDesktopWidget>
 #include <QSettings>
 #include <QVBoxLayout>
+#include <time.h>
 
 using namespace std;
 
@@ -40,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->ui->listSelected->setDragEnabled(false);
     this->selTable.setGridType(0); // type Grid
     this->selTable.setGridSize(QSize(2,1));
+    srand(time(NULL));
 
     connect(
                 ui->actionIniciarRastreamento, SIGNAL(triggered()),
@@ -173,8 +175,6 @@ void MainWindow::on_run_clicked()
                                            QMessageBox::Ok);
         return;
     }
-    QDesktopWidget *widget = QApplication::desktop();
-    QRect rect = widget->screenGeometry(0);             // get actual size of window
 
     this->selTable.setTimeSel(this->ui->timeSel->value());
     if(this->ui->type->currentIndex()==3)  // memory Game
@@ -182,15 +182,13 @@ void MainWindow::on_run_clicked()
         memoryGame *mg;
         mg = new memoryGame(this);
         mg->setTable(this->selTable);
-//        mg->show();
-//        mg->move(rect.width()+10, rect.y());
-
-        mg->showFullScreen();
+        //mg->showFullScreen();
         connect(&_eyetracker, &Eyetracker::eyesPositionChanged, [mg](const EyesPosition &e)
         {
             mg->setPt({ e.gaze.x() * mg->width(), e.gaze.y() * mg->height() });
         });
         connect(mg, SIGNAL(finished(int)), mg, SLOT(deleteLater()));
+        mg->exec();
     }
     else
     {
@@ -198,7 +196,7 @@ void MainWindow::on_run_clicked()
         tableView *tb;
         tb=new tableView(this);
         tb->setTable(this->selTable);
-        tb->move(rect.width()+10, rect.y());
+        //tb->move(rect.width()+10, rect.y());
         tb->showFullScreen();
 
         connect(&_eyetracker, &Eyetracker::eyesPositionChanged, [tb](const EyesPosition &e)
@@ -228,6 +226,16 @@ void MainWindow::loadImagesDir(QString pth,QStringList *listImg)
 
 void MainWindow::on_random_clicked()
 {
+    int N=this->ui->gridCol->value()*this->ui->gridLines->value();
+    if(this->ui->type->currentIndex()==3 && N%2)         // if the gridsize is even in memory game
+    {
+        int ret = QMessageBox::information(this, tr("Erro na escolha da grade!"),
+                                           tr("Só é possível escolher um número de cartas pares\n"
+                                              "no jogo de memória."),
+                                           QMessageBox::Ok);
+        return;
+    }
+
     class seleItem{
     public:
         QString path;
@@ -240,7 +248,6 @@ void MainWindow::on_random_clicked()
     }
 
     random_shuffle(allImagesPath.begin(),allImagesPath.end());
-    int N=this->ui->gridCol->value()*this->ui->gridLines->value();
     if(this->ui->type->currentIndex()==3){   // Memory Game
         for(int i=0;i<N/2;i++){
             seleItem it;

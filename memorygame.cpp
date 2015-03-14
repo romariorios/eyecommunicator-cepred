@@ -6,6 +6,7 @@
 #include <QSvgRenderer>
 #include <QLabel>
 #include <QMovie>
+#include <QDesktopWidget>
 
 memoryGame::memoryGame(QWidget *parent) :
     QDialog(parent),
@@ -16,18 +17,40 @@ memoryGame::memoryGame(QWidget *parent) :
     connect(ticTac, &QTimer::timeout, this, &memoryGame::on_ticTacTimeOver);
     this->setMouseTracking(true);
     movie = new QMovie("iwon.gif");
+    this->backGround.load("background.jpg");
+    this->cardBack.load("cardBack.png");
+    this->selectedSound = new QSound(QDir::currentPath()+"/select.wav");
+
 
 }
 
 memoryGame::~memoryGame()
 {
     delete ui;
+    delete this->selectedSound;
     this->ticTac->stop();
+    delete this->ticTac;
+    delete this->movie;
 }
 
 void memoryGame::setTable(table tb)
 {
     this->tableData=tb;
+}
+
+void memoryGame::setSize()
+{
+
+    int w=this->geometry().width();
+    int h=this->geometry().height();
+    this->movie->setScaledSize(QSize(w,h));
+    wi=(float)w/this->tableData.getGridSize().width(); // image size
+    hi=(float)h/this->tableData.getGridSize().height();
+    if(wi<hi)
+        hi=wi=wi*0.8;
+    else
+        wi=hi=hi*0.8;
+
 }
 
 
@@ -38,30 +61,35 @@ void memoryGame::paintEvent(QPaintEvent *ev)
     QPainter estojo;
     int w=this->geometry().width();
     int h=this->geometry().height();
-    float dx=(w-(wi*this->tableData.getGridSize().width()))/2;   //center the images
-    float dy=(h-(hi*this->tableData.getGridSize().height()))/2;
+    int cols=this->tableData.getGridSize().width();
+    int rows=this->tableData.getGridSize().height();
+    float dx=(w-(wi*cols))/(cols+1);   //center the images
+    float dy=(h-(hi*rows))/(rows+1);
     float x=dx;
     float y=dy;
     QPixmap im=this->tableData.getImage(0);
     QRectF pos(x,y,wi,hi);
-    QRectF tam(0,0,im.width(),im.height());
     estojo.begin(this);
-    estojo.setBrush(QColor(200,200,200));
-    estojo.drawRect(0,0,w,h);
-
+    QRectF tam2(0,0,this->backGround.width(),this->backGround.height());
+    estojo.drawPixmap(QRectF(0,0,w,h),this->backGround,tam2);
     for(int i=0;i<this->tableData.count();i++)
     {
         im=this->tableData.getImage(i);
-        QRectF tam(0,0,im.width(),im.height());
         if(i==i1st || i==i2nd || matched[i])
+        {
+            QRectF tam(0,0,im.width(),im.height());
             estojo.drawPixmap(pos,im,tam);
+        }
         else
-            estojo.drawRect(pos);
-        x+=wi;
+        {
+            QRectF tam(0,0,this->cardBack.width(),this->cardBack.height());
+            estojo.drawPixmap(pos,this->cardBack,tam);
+        }
+        x+=(wi+dx);
         if(x>=w-1-dx)
         {
             x=dx;
-            y+=hi;
+            y+=(hi+dy);
         }
         pos=QRectF(x,y,wi,hi);
 
@@ -81,6 +109,12 @@ void memoryGame::paintEvent(QPaintEvent *ev)
 
 void memoryGame::showEvent(QShowEvent *sev)
 {
+    QDesktopWidget *widget = QApplication::desktop();
+    int nSrc=widget->screenCount();
+    QRect rect = widget->screenGeometry(nSrc-1);             // get second window size
+
+    this->setGeometry(rect);
+
     this->ticTac->start(this->tableData.getTimeSel()*100);
     this->sizeSel=0;
     this->rowSelOld=-1;
@@ -88,17 +122,10 @@ void memoryGame::showEvent(QShowEvent *sev)
     this->memoTime=0;
     this->memoStart=false;
 
-    int w=this->geometry().width();
-    int h=this->geometry().height();
-    this->movie->setScaledSize(QSize(w,h));
-    wi=(float)w/this->tableData.getGridSize().width();
-    hi=(float)h/this->tableData.getGridSize().height();
-    if(wi<hi)
-        hi=wi;
-    else
-        wi=hi;
     this->matched.clear();
     this->matched.assign(this->tableData.count(),false);
+
+    this->setSize();
 }
 
 void memoryGame::closeEvent(QCloseEvent *cev)
@@ -111,14 +138,18 @@ void memoryGame::hideEvent(QHideEvent *hev)
 {
     this->ticTac->stop();
     this->disconnect();
+    this->close();
 }
 
 void memoryGame::on_ticTacTimeOver()
 {
     int w=this->geometry().width();
     int h=this->geometry().height();
-    float dx=(w-(wi*this->tableData.getGridSize().width()))/2;   //center the images
-    float dy=(h-(hi*this->tableData.getGridSize().height()))/2;
+    int cols=this->tableData.getGridSize().width();
+    int rows=this->tableData.getGridSize().height();
+
+    float dx=(w-(wi*cols))/(cols+1);   //center the images
+    float dy=(h-(hi*rows))/(rows+1);
     float x=dx;
     float y=dy;
     QRectF pos(x,y,wi,hi);
@@ -145,12 +176,14 @@ void memoryGame::on_ticTacTimeOver()
                     if(i1st<0)    // selecting the first card
                     {
                         this->i1st=i;
+                        this->selectedSound->play();
                     }
                     else if(i2nd<0) // selecting the second card
                     {
                         if(i!=i1st) // desconsidering double selecting the same card
                         {
                             this->i2nd=i;
+                            this->selectedSound->play();
                             // verify if was matched
                             if(this->tableData.getId(i1st)==this->tableData.getId(i2nd))
                             {
@@ -163,15 +196,14 @@ void memoryGame::on_ticTacTimeOver()
 
                     }
 
-                    QSound::play(QDir::currentPath()+"/Images/select.wav");
                 }
             }
         }
-        x+=wi;
+        x+=(wi+dx);
         if(x>=w-1-dx)
         {
             x=dx;
-            y+=hi;
+            y+=(hi+dy);
         }
         pos=QRectF(x,y,wi,hi);
     }
@@ -188,20 +220,23 @@ void memoryGame::on_ticTacTimeOver()
     if(nMatched==this->tableData.count())       // end of game
     {
         this->ticTac->stop();
-        this->finished();
+        this->fini();
     }
     this->repaint();
 
 }
 
 
-void memoryGame::finished()
+void memoryGame::fini()
 {
     QLabel *l=new QLabel();
     if(!movie->isValid())
         int u=0;
     l->setMovie(movie);
     this->ui->verticalLayout->addWidget(l);
+    this->setSize();
+    movie->setSpeed(200);
+    QSound::play("iwon.wav");
     movie->start();
     this->repaint();
 
