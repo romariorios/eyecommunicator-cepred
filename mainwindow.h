@@ -47,6 +47,8 @@ private slots:
     void on_actionSelPlugin_triggered();
 
 private:
+    bool tryStart(int pluginIndex, const QVariantHash &params = {});
+
     Ui::MainWindow *ui;
     Eyetracker _eyetracker;
     void changeTablePar();

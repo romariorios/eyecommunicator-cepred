@@ -21,7 +21,8 @@ public:
 
     void addPluginPath(const QDir &dir); // adiciona pasta dos plugins
     void setCurrentPlugin(int index); // seleciona plugin
-    QVector<BaseEyetrackerPlugin::Param> params() const;
+    QVector<BaseEyetrackerPlugin::Param> availableParams() const;
+    inline QVariantHash currentParams() const { return _currentParams; }
 
     unique_ptr<BaseTrackingCalibrationWidget> calibrationWidget() const;
     bool calibrate(const QVector<EyesPosition> &map);
@@ -30,7 +31,7 @@ public:
     inline bool isPluginSet() const { return _curPlugin; } // verifica se existe um plugin selecionado
 
 public slots:
-    bool start(const QVariantHash &params);
+    bool start(const QVariantHash &availableParams);
     bool start();
     bool stop();
 
@@ -42,6 +43,7 @@ private:
     BaseEyetrackerPlugin *_curPlugin = nullptr;
     int _curPluginIndex = -1; // relies on _pluginsFound never having an item removed
     bool _hasStarted = false;
+    QVariantHash _currentParams;
 };
 
 #endif // EYETRACKER_HPP
