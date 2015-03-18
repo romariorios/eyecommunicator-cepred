@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QFileSystemModel>
 #include <QStringList>
+#include <QLabel>
 #include "table.h"
 #include "memorygame.h"
 
@@ -48,6 +49,10 @@ private slots:
     void on_actionSelPlugin_triggered();
 
 private:
+    bool tryStart(int pluginIndex, const QVariantHash &params = {});
+    void setPluginState(bool isStarted, int pluginIndex);
+
+    QLabel _statusBarWidget;
     Ui::MainWindow *ui;
     //memoryGame mg;
     Eyetracker _eyetracker;

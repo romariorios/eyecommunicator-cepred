@@ -3,6 +3,7 @@
 
 #include <baseeyetrackerplugin.hpp>
 
+#include <QProcess>
 #include <QTcpSocket>
 
 class GazepointEyetrackerPlugin : public QObject, public BaseEyetrackerPlugin
@@ -43,6 +44,7 @@ private:
 
     QTcpSocket _socket;
     QString _server;
+    QProcess _gazepointExe;
     int _port;
     int _timerId;
 };

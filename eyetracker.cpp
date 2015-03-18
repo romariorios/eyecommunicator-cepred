@@ -58,7 +58,7 @@ void Eyetracker::setCurrentPlugin(int index)
         this, SIGNAL(eyesPositionChanged(EyesPosition)));
 }
 
-QVector<BaseEyetrackerPlugin::Param> Eyetracker::params() const
+QVector<BaseEyetrackerPlugin::Param> Eyetracker::availableParams() const
 {
     if (!_curPlugin) {
         return {};
@@ -72,9 +72,14 @@ bool Eyetracker::start(const QVariantHash &params)
     if (_hasStarted && !_curPlugin->stopTracking())
         return false;
 
-    return _hasStarted = _curPlugin &&
+    _hasStarted = _curPlugin &&
         _curPlugin->setTrackingParams(params) &&
         _curPlugin->startTracking();
+
+    if (_hasStarted)
+        _currentParams = params;
+
+    return _hasStarted;
 }
 
 bool Eyetracker::start()
@@ -82,7 +87,7 @@ bool Eyetracker::start()
     if (!_curPlugin)
         return false;
 
-    PluginConfigDialog d{params()};
+    PluginConfigDialog d{availableParams()};
 
     return d.exec() && start(d.result());
 }
@@ -93,6 +98,7 @@ bool Eyetracker::stop()
         return false;
 
     _hasStarted = false;
+    _currentParams = {};
     return true;
 }
 

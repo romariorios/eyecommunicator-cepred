@@ -1,5 +1,6 @@
 #include "gazepointeyetrackerplugin.hpp"
 
+#include <QProcess>
 #include <QTimerEvent>
 
 #include <string>
@@ -19,7 +20,8 @@ QVector<BaseEyetrackerPlugin::Param> GazepointEyetrackerPlugin::availableTrackin
 {
     return {
         { "server", "Server Adderss", Param::String, {}, "127.0.0.1" },
-        { "port", "Port", Param::Int, { 1, 65535 }, 4242 }
+        { "port", "Port", Param::Int, { 1, 65535 }, 4242 },
+        { "gazepointExe", "Server executable", Param::Path, {}, {} }
     };
 }
 
@@ -27,6 +29,7 @@ bool GazepointEyetrackerPlugin::setTrackingParams(const QVariantHash &params)
 {
     _server = params["server"].toString();
     _port = params["port"].toInt();
+    _gazepointExe.setProgram(params["gazepointExe"].toString());
 
     return true;
 }
@@ -45,9 +48,16 @@ bool GazepointEyetrackerPlugin::calibrateTracking(const QVector<EyesPosition> &)
 
 bool GazepointEyetrackerPlugin::startTracking()
 {
-    _socket.connectToHost(_server, _port);
-    if (!_socket.waitForConnected())
+    _gazepointExe.start();
+
+    if (!_gazepointExe.waitForStarted())
         return false;
+
+    _socket.connectToHost(_server, _port);
+    if (!_socket.waitForConnected()) {
+        _gazepointExe.kill();
+        return false;
+    }
 
 
     _socket.write(valCmd("ENABLE_SEND_POG_BEST", true));
@@ -63,6 +73,7 @@ bool GazepointEyetrackerPlugin::stopTracking()
 {
     killTimer(_timerId);
     _socket.disconnectFromHost();
+    _gazepointExe.kill();
     return _socket.waitForDisconnected();
 }
 

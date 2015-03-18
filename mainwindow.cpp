@@ -43,6 +43,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->selTable.setGridSize(QSize(2,1));
     srand(time(NULL));
 
+    statusBar()->addWidget(&_statusBarWidget);
+
     connect(
                 ui->actionIniciarRastreamento, SIGNAL(triggered()),
                 &_eyetracker, SLOT(start()));
@@ -59,9 +61,10 @@ MainWindow::MainWindow(QWidget *parent) :
         _eyetracker.addPluginPath(path);
     }
 
-    auto selectedPlugin = QSettings{}.value("selectedPlugin", -1).toInt();
-    _eyetracker.setCurrentPlugin(selectedPlugin);
-    if (!_eyetracker.start())
+    QSettings s;
+    auto selectedPlugin = s.value("selectedPlugin", -1).toInt();
+    auto &&pluginParams = s.value("pluginParams", QVariantHash{}).toHash();
+    if (!tryStart(selectedPlugin, pluginParams))
         on_actionSelPlugin_triggered();
 }
 
@@ -315,11 +318,39 @@ void MainWindow::on_actionSelPlugin_triggered()
     connect(&select, &QPushButton::clicked, &d, &QDialog::close);
     connect(&select, &QPushButton::clicked, [&]()
     {
-        auto row = plugins.currentIndex().row();
-        _eyetracker.setCurrentPlugin(row);
-        if (_eyetracker.start())
-            QSettings{}.setValue("selectedPlugin", row);
+        if (!tryStart(plugins.currentIndex().row()))
+            QMessageBox::critical(
+                this,
+                "Plugin não carregado",
+                "Houve um problema ao carregar o plugin");
     });
 
     d.exec();
+}
+
+bool MainWindow::tryStart(int pluginIndex, const QVariantHash &params)
+{
+    _eyetracker.setCurrentPlugin(pluginIndex);
+    auto started = params.empty()? _eyetracker.start() : _eyetracker.start(params);
+
+    QSettings s;
+    if (started) {
+        s.setValue("selectedPlugin", pluginIndex);
+        s.setValue("pluginParams", _eyetracker.currentParams());
+    } else {
+        s.remove("selectedPlugin");
+        s.remove("pluginParams");
+    }
+
+    setPluginState(started, pluginIndex);
+    return started;
+}
+
+void MainWindow::setPluginState(bool isStarted, int pluginIndex)
+{
+    _statusBarWidget.setText(
+        isStarted?
+            "Plugin carregado: " + _eyetracker.pluginsFound()[pluginIndex] :
+            "NENHUM PLUGIN CARREGADO");
+    ui->run->setEnabled(isStarted);
 }

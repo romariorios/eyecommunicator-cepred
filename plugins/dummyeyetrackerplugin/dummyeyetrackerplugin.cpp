@@ -42,12 +42,16 @@ bool DummyEyetrackerPlugin::calibrateTracking(const QVector<EyesPosition> &map)
 bool DummyEyetrackerPlugin::startTracking()
 {
     _curTimerId = startTimer(_period);
+
+    return true;
 }
 
 bool DummyEyetrackerPlugin::stopTracking()
 {
     killTimer(_curTimerId);
     _curTimerId = 0;
+
+    return true;
 }
 
 void DummyEyetrackerPlugin::timerEvent(QTimerEvent *e)

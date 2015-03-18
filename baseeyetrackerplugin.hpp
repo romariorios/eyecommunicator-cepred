@@ -25,6 +25,7 @@ public:
             Int,
             Float,
             String,
+            Path,
             Set
         } type;
         QVector<QVariant> values;
