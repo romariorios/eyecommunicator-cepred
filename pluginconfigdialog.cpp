@@ -3,9 +3,11 @@
 
 #include <QComboBox>
 #include <QDoubleSpinBox>
+#include <QFileDialog>
 #include <QLabel>
 #include <QLineEdit>
 #include <QSpinBox>
+#include <QToolButton>
 
 PluginConfigDialog::PluginConfigDialog(
     const QVector<BaseEyetrackerPlugin::Param> params,
@@ -51,6 +53,26 @@ PluginConfigDialog::PluginConfigDialog(
             paramWidget = lineEdit;
             lineEdit->setText(p.defaultValue.toString());
             fieldLayout->addWidget(lineEdit);
+            break;
+        }
+        case BaseEyetrackerPlugin::Param::Path:
+        {
+            auto path = new QLineEdit{this};
+            path->setText(p.defaultValue.toString());
+            path->setEnabled(false);
+            fieldLayout->addWidget(path);
+
+            auto search = new QToolButton{this};
+            search->setText("...");
+            connect(search, &QToolButton::clicked, [path, p, this]()
+            {
+                path->setText(
+                    QFileDialog::getOpenFileName(
+                        this, p.fullName));
+            });
+            fieldLayout->addWidget(search);
+
+            paramWidget = path;
             break;
         }
         case BaseEyetrackerPlugin::Param::Set:
