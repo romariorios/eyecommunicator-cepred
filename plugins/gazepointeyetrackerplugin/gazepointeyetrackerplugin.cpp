@@ -60,7 +60,7 @@ bool GazepointEyetrackerPlugin::startTracking()
     }
 
 
-    _socket.write(valCmd("ENABLE_SEND_POG_BEST", true));
+    _socket.write(valCmd("ENABLE_SEND_POG_FIX", true));
     _socket.write(valCmd("ENABLE_SEND_POG_LEFT", true));
     _socket.write(valCmd("ENABLE_SEND_POG_RIGHT", true));
     _socket.write(valCmd("ENABLE_SEND_DATA", true));
@@ -96,7 +96,7 @@ void GazepointEyetrackerPlugin::timerEvent(QTimerEvent *e)
 
     for (auto node = d.first_node("REC"); node; node = node->next_sibling("REC"))
         emit eyesPositionChanged({
-            { attr_val_d(node, "BPOGX"), attr_val_d(node, "BPOGY") },
+            { attr_val_d(node, "FPOGX"), attr_val_d(node, "FPOGY") },
             { attr_val_d(node, "LPOGX"), attr_val_d(node, "LPOGY") },
             { attr_val_d(node, "RPOGX"), attr_val_d(node, "RPOGY") }
         });

@@ -25,6 +25,8 @@ QVector<BaseEyetrackerPlugin::Param> DummyEyetrackerPlugin::availableTrackingPar
 bool DummyEyetrackerPlugin::setTrackingParams(const QVariantHash &params)
 {
     _period = params["period"].toInt();
+
+    return true;
 }
 
 unique_ptr<BaseTrackingCalibrationWidget> DummyEyetrackerPlugin::trackingCalibrationWidget() const
