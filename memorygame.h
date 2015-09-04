@@ -5,12 +5,12 @@
 #include <vector>
 #include <QPixmap>
 #include <QSound>
+#include <QTimer>
+#include <QMovie>
 
 using namespace std;
 
-namespace Ui {
-class memoryGame;
-}
+#include "ui_memorygame.h"
 
 class memoryGame : public QDialog
 {
@@ -23,10 +23,10 @@ public:
     void setSize();
 
 private:
-    Ui::memoryGame *ui;
+    Ui::memoryGame ui;
     table tableData;        // the images data
     QPoint pt;              // the eyetracker point
-    QTimer *ticTac;
+    QTimer ticTac;
     QRectF posSel;           // the selected image position
 
     double sizeSel;         // size of the animation selection procsess
@@ -38,10 +38,10 @@ private:
     double memoTime;        // timesteps to memorizing wrong cards
     bool memoStart;         // iniciates timesteps for memorizing wrong cards
     void fini();        // Wow the game!
-    QMovie *movie;
+    QMovie movie{"iwon.gif"};
     QPixmap backGround;     // backgroung image
     QPixmap cardBack;       // back of the cards in memory game
-    QSound *selectedSound;        // sound of selected image
+    QSound selectedSound;        // sound of selected image
 
 protected:
     void paintEvent(QPaintEvent *ev);

@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <vector>
 #include "tableview.h"
+#include "rndtableview.h"
 #include "memorygame.h"
 
 #include <QFileDialog>
@@ -11,6 +12,10 @@
 #include <QSettings>
 #include <QVBoxLayout>
 #include <time.h>
+#include <iostream>
+#include <fstream>
+#include <QProgressDialog>
+#include <QCoreApplication>
 
 using namespace std;
 
@@ -41,6 +46,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->ui->listSelected->setDragEnabled(false);
     this->selTable.setGridType(0); // type Grid
     this->selTable.setGridSize(QSize(2,1));
+    this->loadTemplates();
+
     srand(time(NULL));
 
     statusBar()->addWidget(&_statusBarWidget);
@@ -81,30 +88,50 @@ void MainWindow::on_treeImages_clicked(const QModelIndex &index)
 
     this->ui->listImages->clear();
     this->imgListPath.clear();
-    QFileInfoList list = dir.entryInfoList();
-    for (int i = 0; i < list.size(); ++i){
-        QFileInfo fileInfo = list.at(i);
+    auto &&list = dir.entryInfoList();
+    int tam=list.size();
+    QProgressDialog progress(tr("Carregando imagens..."), tr("Cancela"), 0, tam, this);
+    progress.setWindowModality(Qt::WindowModal);
+    progress.show();
+
+    for (int i = 0; i < tam; ++i){
+        const auto &fileInfo = list.at(i);
         this->ui->listImages->addItem(fileInfo.baseName());
         this->ui->listImages->item(i)->setIcon(QIcon(fileInfo.filePath()));
-        this->imgListPath.push_back(fileInfo.filePath());
+        this->imgListPath.push_back(QDir().relativeFilePath(fileInfo.filePath()));
+        progress.setValue(i);
+        QCoreApplication::processEvents();
+        if(progress.wasCanceled())
+            break;
     }
+    progress.close();
 }
 
 void MainWindow::on_listImages_clicked(const QModelIndex &index)
 {
-    int N=this->ui->gridLines->value()*this->ui->gridCol->value();
-    if(this->ui->listSelected->count()>=N)
+    int N = this->ui->gridLines->value() * this->ui->gridCol->value();
+    if(this->ui->listSelected->count() >= N && this->ui->type->currentIndex()!=1)
         return;
-    QListWidgetItem *it= new QListWidgetItem();
+    auto it= new QListWidgetItem(ui->listSelected);
     *it=*this->ui->listImages->item(index.row());
+    it->setFlags(it->flags() | Qt::ItemIsUserCheckable); // set checkable flag
+    it->setCheckState(Qt::Checked); // AND initialize check state
     this->ui->listSelected->addItem(it);
     this->selTable.addImg(imgListPath[index.row()],index.row());
 }
 
 void MainWindow::on_listSelected_clicked(const QModelIndex &index)
 {
-    this->selTable.delImg(index.row());
-    QListWidgetItem *it=this->ui->listSelected->takeItem(index.row());
+    if(this->selTable.getCell(index.row()).eyeSelectable)
+    {
+        this->selTable.setCellEyeSelectable(index.row(),false);
+        this->ui->listSelected->item(index.row())->setCheckState(Qt::Unchecked);
+    }
+    else
+    {
+        this->selTable.setCellEyeSelectable(index.row(),true);
+        this->ui->listSelected->item(index.row())->setCheckState(Qt::Checked);
+    }
 }
 
 void MainWindow::on_gridSize_currentIndexChanged(int index)
@@ -137,15 +164,20 @@ void MainWindow::on_gridSize_currentIndexChanged(int index)
 
 void MainWindow::on_type_currentIndexChanged(int index)
 {
-    if(index == 3)
+    if(index==3) // grid lateral
     {
-        //this->ui->treeImages->setEnabled(false);
-        //this->ui->listImages->setEnabled(false);
+        this->ui->gridSize->setCurrentIndex(0); // 1x2
+        this->ui->gridSize->setEnabled(false);
+        this->ui->gridCol->setValue(2);
+        this->ui->gridLines->setValue(1);
+        this->ui->gridCol->setEnabled(false);
+        this->ui->gridLines->setEnabled(false);
     }
     else
     {
-        this->ui->treeImages->setEnabled(true);
-        this->ui->listImages->setEnabled(true);
+        this->ui->gridSize->setEnabled(true);
+        this->ui->gridCol->setEnabled(true);
+        this->ui->gridLines->setEnabled(true);
     }
 
     changeTablePar();
@@ -170,67 +202,107 @@ void MainWindow::changeTablePar()
 void MainWindow::on_run_clicked()
 {
     int N=this->ui->gridCol->value()*this->ui->gridLines->value();
-    if(this->ui->type->currentIndex()==3 && N%2)         // if the gridsize is even in memory game
+    if(this->ui->type->currentIndex()==2 && N%2)         // if the gridsize is even in memory game
     {
-        int ret = QMessageBox::information(this, tr("Erro na escolha da grade!"),
-                                           tr("Só é possível escolher um número de cartas pares\n"
-                                              "no jogo de memória."),
-                                           QMessageBox::Ok);
+        QMessageBox::information(
+                    this,
+                    tr("Erro na escolha da grade!"),
+                    tr("Só é possível escolher um número de cartas pares\n"
+                       "no jogo de memória."),
+                    QMessageBox::Ok);
         return;
     }
 
     this->selTable.setTimeSel(this->ui->timeSel->value());
-    if(this->ui->type->currentIndex()==3)  // memory Game
-    {
-        memoryGame *mg;
-        mg = new memoryGame(this);
-        mg->setTable(this->selTable);
-        //mg->showFullScreen();
-        connect(&_eyetracker, &Eyetracker::eyesPositionChanged, [mg](const EyesPosition &e)
-        {
-            mg->setPt({ e.gaze.x() * mg->width(), e.gaze.y() * mg->height() });
-        });
-        connect(mg, SIGNAL(finished(int)), mg, SLOT(deleteLater()));
-        mg->exec();
-    }
-    else
-    {
+    this->selTable.setText(this->ui->tableText->text());
 
+    switch (this->ui->type->currentIndex())
+    {
+    case 0:  // Normal Grid
         tableView *tb;
         tb=new tableView(this);
         tb->setTable(this->selTable);
-        //tb->move(rect.width()+10, rect.y());
-        tb->showFullScreen();
+        tb->setIsLateral(false);
 
         connect(&_eyetracker, &Eyetracker::eyesPositionChanged, [tb](const EyesPosition &e)
         {
             tb->setPt({ e.gaze.x() * tb->width(), e.gaze.y() * tb->height() });
         });
         connect(tb, SIGNAL(finished(int)), tb, SLOT(deleteLater()));
+        tb->exec();
+        break;
+    case 1:  // Random Grid
+        rndTableView *rtb;
+        rtb=new rndTableView(this);
+        rtb->setTable(this->selTable);
+
+        connect(&_eyetracker, &Eyetracker::eyesPositionChanged, [rtb](const EyesPosition &e)
+        {
+            rtb->setPt({ e.gaze.x() * rtb->width(), e.gaze.y() * rtb->height() });
+        });
+        connect(rtb, SIGNAL(finished(int)), rtb, SLOT(deleteLater()));
+        rtb->exec();
+        break;
+    case 2:  // memory Game
+        memoryGame *mg;
+        mg = new memoryGame(this);
+        mg->setTable(this->selTable);
+        connect(&_eyetracker, &Eyetracker::eyesPositionChanged, [mg](const EyesPosition &e)
+        {
+            mg->setPt({ e.gaze.x() * mg->width(), e.gaze.y() * mg->height() });
+        });
+        connect(mg, SIGNAL(finished(int)), mg, SLOT(deleteLater()));
+        mg->exec();
+        break;
+    case 3:  // double Lateral Grid
+        tableView *ltb;
+        ltb=new tableView(this);
+        ltb->setTable(this->selTable);
+        ltb->setIsLateral(true);
+
+        connect(&_eyetracker, &Eyetracker::eyesPositionChanged, [ltb](const EyesPosition &e)
+        {
+            ltb->setPt({ e.gaze.x() * ltb->width(), e.gaze.y() * ltb->height() });
+        });
+        connect(ltb, SIGNAL(finished(int)), ltb, SLOT(deleteLater()));
+        ltb->exec();
+        break;
     }
 }
 void MainWindow::loadImagesDir(QString pth,QStringList *listImg)
 {
     QDir dir(pth);
     dir.setFilter(QDir::Files | QDir::NoSymLinks);
-    QFileInfoList list = dir.entryInfoList();
-    for (int i = 0; i < list.size(); ++i){
-        QFileInfo fileInfo = list.at(i);
-        listImg->push_back(fileInfo.filePath());
+    auto list = dir.entryInfoList();
+    for (auto fileInfo : list) {
+        listImg->push_back(QDir().relativeFilePath(fileInfo.filePath()));
     }
     dir.setFilter(QDir::AllDirs|QDir::NoDotDot|QDir::NoDot);
     list = dir.entryInfoList();
-    for (int i = 0; i < list.size(); ++i){
-        QFileInfo fileInfo = list.at(i);
+    for (auto fileInfo : list){
         this->loadImagesDir(fileInfo.filePath(),listImg);
     }
 
 }
 
+void MainWindow::loadTemplates()
+{
+    QDir dir(QDir::currentPath()+"/Pranchas");
+    dir.setFilter(QDir::Files | QDir::NoSymLinks);
+    QStringList filters;
+    filters << "*.tbl" ;
+    dir.setNameFilters(filters);
+    auto list = dir.entryInfoList();
+    for (auto fileInfo : list) {
+        this->templateListPath.push_back(fileInfo.filePath());
+        this->ui->templates->addItem(fileInfo.baseName());
+    }
+}
+
 void MainWindow::on_random_clicked()
 {
     int N=this->ui->gridCol->value()*this->ui->gridLines->value();
-    if(this->ui->type->currentIndex()==3 && N%2)         // if the gridsize is even in memory game
+    if(this->ui->type->currentIndex()==2 && N%2)         // if the gridsize is even in memory game
     {
         int ret = QMessageBox::information(this, tr("Erro na escolha da grade!"),
                                            tr("Só é possível escolher um número de cartas pares\n"
@@ -251,7 +323,7 @@ void MainWindow::on_random_clicked()
     }
 
     random_shuffle(allImagesPath.begin(),allImagesPath.end());
-    if(this->ui->type->currentIndex()==3){   // Memory Game
+    if(this->ui->type->currentIndex()==2){   // Memory Game
         for(int i=0;i<N/2;i++){
             seleItem it;
             it.path=this->allImagesPath[i];
@@ -276,6 +348,8 @@ void MainWindow::on_random_clicked()
     random_shuffle(selectedPath.begin(),selectedPath.end());
     this->ui->listSelected->clear();
     this->selTable.clearAll();
+    this->imgListPath.clear();
+    this->ui->listImages->clear();
 
     for (int i = 0; i < selectedPath.size(); ++i){
         QFileInfo fileInfo;
@@ -320,9 +394,9 @@ void MainWindow::on_actionSelPlugin_triggered()
     {
         if (!tryStart(plugins.currentIndex().row()))
             QMessageBox::critical(
-                this,
-                "Plugin não carregado",
-                "Houve um problema ao carregar o plugin");
+                        this,
+                        "Plugin não carregado",
+                        "Houve um problema ao carregar o plugin");
     });
 
     d.exec();
@@ -349,8 +423,165 @@ bool MainWindow::tryStart(int pluginIndex, const QVariantHash &params)
 void MainWindow::setPluginState(bool isStarted, int pluginIndex)
 {
     _statusBarWidget.setText(
-        isStarted?
-            "Plugin carregado: " + _eyetracker.pluginsFound()[pluginIndex] :
-            "NENHUM PLUGIN CARREGADO");
+                isStarted?
+                    "Plugin carregado: " + _eyetracker.pluginsFound()[pluginIndex] :
+                    "NENHUM PLUGIN CARREGADO");
     ui->run->setEnabled(isStarted);
+}
+
+void MainWindow::openTemplate(QString nome)
+{
+    ifstream ifp;
+    ifp.open(nome.toLocal8Bit());
+    int type,lines,cols;
+    double time;
+    string text;
+    int size=0;
+    // Fake loading only for get Size
+    ifp >> type;
+    ifp >> cols;
+    ifp >> lines;
+    ifp >> time;
+    ifp.ignore();
+    getline(ifp,text);
+    QString Qpath;
+    do
+    {
+        string pat;
+        int id;
+        bool eyeSel;
+        getline(ifp,pat);
+        ifp >> id;
+        ifp >> eyeSel;
+        ifp.ignore();
+        Qpath= QString::fromLocal8Bit(pat.c_str());
+        size++;
+    }while(!Qpath.isEmpty());
+    ifp.close();
+
+    // Real loading
+    // load grid information
+
+
+    ifp.open(nome.toLocal8Bit());
+
+    ifp >> type;
+    this->ui->type->setCurrentIndex(type);
+    ifp >> cols;
+    this->ui->gridCol->setValue(cols);
+    ifp >> lines;
+    this->ui->gridLines->setValue(lines);
+    ifp >> time;
+    this->ui->timeSel->setValue(time);
+    ifp.ignore();
+    getline(ifp,text);
+    this->ui->tableText->setText(QString().fromLatin1(text.c_str()));
+
+    // load images
+    QProgressDialog progress(tr("Carregando prancha..."), tr("Cancela"), 0, size, this);
+    progress.setWindowModality(Qt::WindowModal);
+    progress.show();
+
+    this->selTable.clearAll();
+    this->ui->listSelected->clear();
+    int i=0;
+    do
+    {
+        string pat;
+        int id;
+        bool eyeSel;
+        getline(ifp,pat);
+        ifp >> id;
+        ifp >> eyeSel;
+        ifp.ignore();
+        Qpath= QString::fromLocal8Bit(pat.c_str());
+        if(!Qpath.isEmpty())
+        {
+            QFileInfo fileInfo;
+            fileInfo.setFile(Qpath);
+            this->ui->listSelected->addItem(fileInfo.baseName());
+            int i=this->ui->listSelected->count()-1;
+            this->ui->listSelected->item(i)->setIcon(QIcon(Qpath));
+            this->ui->listSelected->item(i)->setFlags(this->ui->listSelected->item(i)->flags() | Qt::ItemIsUserCheckable);
+
+            this->selTable.addImg(Qpath,id);
+            this->selTable.setCellEyeSelectable(this->selTable.getListCellSize()-1,eyeSel);
+            if(eyeSel)
+                this->ui->listSelected->item(i)->setCheckState(Qt::Checked);
+            else
+                this->ui->listSelected->item(i)->setCheckState(Qt::Unchecked);
+            progress.setValue(++i);
+            QCoreApplication::processEvents();
+            if(progress.wasCanceled())
+                break;
+
+        }
+    }while(!Qpath.isEmpty());
+    progress.close();
+    ifp.close();
+    this->repaint();
+}
+
+void MainWindow::on_actionSalvar_triggered()
+{
+    QString nome=QFileDialog::getSaveFileName(this,"Select output file to save",
+                                              "Pranchas", "Tabelas (*.tbl)");
+    if(nome.isEmpty())
+        return;
+    ofstream ofp;
+    ofp.open(nome.toLocal8Bit());
+    // save grid information
+    ofp << this->ui->type->currentIndex()<<endl;
+    ofp << this->ui->gridCol->value()<<endl;
+    ofp << this->ui->gridLines->value() << endl;
+    ofp << this->ui->timeSel->value() << endl;
+    ofp << this->ui->tableText->text().toStdString()<<endl;
+    // save images paths
+    for(int i=0;i<this->selTable.count();i++)
+    {
+        ofp << this->selTable.getImgPath(i).toLocal8Bit().toStdString() <<endl;
+        ofp << this->selTable.getId(i)<<endl;
+        ofp << this->selTable.getCell(i).eyeSelectable<<endl;
+    }
+
+    ofp.close();
+    this->templateListPath.clear();
+    this->ui->templates->clear();
+    this->loadTemplates();
+}
+
+
+
+
+void MainWindow::on_actionAbrir_triggered()
+{
+    QString nome=QFileDialog::getOpenFileName(this,"Select file to open",
+                                              "", "Tabelas (*.tbl)");
+    if(nome.isEmpty())
+        return;
+    this->openTemplate(nome);
+}
+
+
+
+void MainWindow::on_templates_doubleClicked(const QModelIndex &index)
+{
+    int i=this->ui->templates->currentRow();
+    int j= index.row();
+    this->openTemplate(this->templateListPath[i]);
+}
+
+void MainWindow::on_clearTable_clicked()
+{
+    this->ui->listSelected->clear();
+    this->selTable.clearAll();
+    this->ui->tableText->clear();
+    this->repaint();
+}
+
+void MainWindow::on_listSelected_doubleClicked(const QModelIndex &index)
+{
+    this->selTable.delImg(index.row());
+    this->ui->listSelected->takeItem(index.row());
+
 }

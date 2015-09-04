@@ -1,27 +1,29 @@
-#ifndef TABLEVIEW_H
-#define TABLEVIEW_H
+#ifndef RNDTABLEVIEW_H
+#define RNDTABLEVIEW_H
 
 #include <QDialog>
 #include "table.h"
+#include <QSound>
+#include <QStringList>
+
 
 namespace Ui {
-class tableView;
+class rndTableView;
 }
 
-class tableView : public QDialog
+class rndTableView : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit tableView(QWidget *parent = 0);
-    ~tableView();
+    explicit rndTableView(QWidget *parent = 0);
+    ~rndTableView();
     void setTable(table tb);
 
-    void setIsLateral(bool value);
-
 private:
-    Ui::tableView *ui;
+    Ui::rndTableView *ui;
     table tableData;        // the images data
+    table rndTableData;     // random selected images
     QPoint pt;              // the eyetracker point
     QTimer *ticTac;
     QRectF posSel;           // the selected image position
@@ -29,8 +31,17 @@ private:
     int rowSelOld;          // the last image index selected
     float wi,hi;            // size of images in the grid
     bool selected;
-    bool isLateral;         // indicates that the grid is double lateral type
     void setSize();
+    bool rndSelimages();    // method to select images from tableData to rndTableData
+    QSound selectedSound;        // sound of selected image
+    QStringList excPair1;   // Exclusion Pairs of images
+    QStringList excPair2;
+    int actualItem;
+    void openExcludedPairs(QString name);
+    bool filterOK(int id);
+
+
+
 
 protected:
     void paintEvent(QPaintEvent *ev);

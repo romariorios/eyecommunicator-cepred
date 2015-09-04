@@ -2,6 +2,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QSvgRenderer>
+#include <QFileInfo>
 
 table::table()
 {
@@ -41,6 +42,7 @@ void table::addImg(QString imgPth, int id)
     tableCell c;
     c.imgPath=imgPth;
     c.id=id;
+    c.eyeSelectable=true;
 
     if(imgPth.right(3)=="svg")
     {
@@ -58,6 +60,22 @@ void table::addImg(QString imgPth, int id)
     }
     this->cell.push_back(c);
 
+}
+
+void table::addCell(tableCell c)
+{
+    this->cell.push_back(c);
+}
+
+tableCell table::getCell(int i)
+{
+    if(i<this->cell.size())
+        return this->cell[i];
+}
+
+void table::setCellEyeSelectable(int i, bool val)
+{
+    this->cell[i].eyeSelectable=val;
 }
 
 void table::delImg(int row)
@@ -102,6 +120,30 @@ void table::setTimeSel(double value)
     timeSel = value;
 }
 
+void table::randomImages()
+{
+    random_shuffle(this->cell.begin(),this->cell.end());
+}
+QString table::getText() const
+{
+    return text;
+}
+
+void table::setText(const QString &value)
+{
+    text = value;
+}
 
 
 
+
+
+
+
+QString tableCell::getImgName()
+{
+    QFileInfo fileInfo;
+    fileInfo.setFile(this->imgPath);
+    return fileInfo.baseName();
+
+}

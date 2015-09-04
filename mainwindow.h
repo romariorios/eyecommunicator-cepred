@@ -5,6 +5,7 @@
 #include <QFileSystemModel>
 #include <QStringList>
 #include <QLabel>
+#include <fstream>
 #include "table.h"
 #include "memorygame.h"
 
@@ -24,6 +25,7 @@ public:
     QFileSystemModel *model;
     table selTable;
     QStringList imgListPath;
+    QStringList templateListPath;
 
 private slots:
     void on_treeImages_clicked(const QModelIndex &index);
@@ -48,9 +50,20 @@ private slots:
 
     void on_actionSelPlugin_triggered();
 
+    void on_actionSalvar_triggered();
+
+    void on_actionAbrir_triggered();
+
+    void on_templates_doubleClicked(const QModelIndex &index);
+
+    void on_clearTable_clicked();
+
+    void on_listSelected_doubleClicked(const QModelIndex &index);
+
 private:
     bool tryStart(int pluginIndex, const QVariantHash &params = {});
     void setPluginState(bool isStarted, int pluginIndex);
+    void openTemplate(QString name);
 
     QLabel _statusBarWidget;
     Ui::MainWindow *ui;
@@ -59,6 +72,7 @@ private:
     void changeTablePar();
     QStringList allImagesPath;  // all images path for memory game purpose
     void loadImagesDir(QString pth, QStringList *listImg);
+    void loadTemplates();
 };
 
 #endif // MAINWINDOW_H

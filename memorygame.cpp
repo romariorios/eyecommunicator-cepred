@@ -1,5 +1,4 @@
 #include "memorygame.h"
-#include "ui_memorygame.h"
 
 #include <QtGui>
 #include <QSound>
@@ -10,42 +9,35 @@
 
 memoryGame::memoryGame(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::memoryGame)
+    selectedSound(QDir::currentPath() + "/select.wav")
 {
-    ui->setupUi(this);
-    this->ticTac = new QTimer();
-    connect(ticTac, &QTimer::timeout, this, &memoryGame::on_ticTacTimeOver);
-    this->setMouseTracking(true);
-    movie = new QMovie("iwon.gif");
-    this->backGround.load("background.jpg");
-    this->cardBack.load("cardBack.png");
-    this->selectedSound = new QSound(QDir::currentPath()+"/select.wav");
+    ui.setupUi(this);
+    connect(&ticTac, &QTimer::timeout, this, &memoryGame::on_ticTacTimeOver);
+    setMouseTracking(true);
+    backGround.load("background.jpg");
+    cardBack.load("cardBack.png");
 
 
 }
 
 memoryGame::~memoryGame()
 {
-    delete ui;
-    delete this->selectedSound;
-    this->ticTac->stop();
-    delete this->ticTac;
-    delete this->movie;
+    ticTac.stop();
 }
 
 void memoryGame::setTable(table tb)
 {
-    this->tableData=tb;
+    tableData=tb;
 }
 
 void memoryGame::setSize()
 {
 
-    int w=this->geometry().width();
-    int h=this->geometry().height();
-    this->movie->setScaledSize(QSize(w,h));
-    wi=(float)w/this->tableData.getGridSize().width(); // image size
-    hi=(float)h/this->tableData.getGridSize().height();
+    int w=geometry().width();
+    int h=geometry().height();
+    movie.setScaledSize(QSize(w,h));
+    wi=(float)w/tableData.getGridSize().width(); // image size
+    hi=(float)h/tableData.getGridSize().height();
     if(wi<hi)
         hi=wi=wi*0.8;
     else
@@ -56,25 +48,25 @@ void memoryGame::setSize()
 
 void memoryGame::paintEvent(QPaintEvent *ev)
 {
-    if(this->tableData.count()==0)
+    if(tableData.count()==0)
         return;
     QPainter estojo;
-    int w=this->geometry().width();
-    int h=this->geometry().height();
-    int cols=this->tableData.getGridSize().width();
-    int rows=this->tableData.getGridSize().height();
+    int w=geometry().width();
+    int h=geometry().height();
+    int cols=tableData.getGridSize().width();
+    int rows=tableData.getGridSize().height();
     float dx=(w-(wi*cols))/(cols+1);   //center the images
     float dy=(h-(hi*rows))/(rows+1);
     float x=dx;
     float y=dy;
-    QPixmap im=this->tableData.getImage(0);
+    QPixmap im=tableData.getImage(0);
     QRectF pos(x,y,wi,hi);
     estojo.begin(this);
-    QRectF tam2(0,0,this->backGround.width(),this->backGround.height());
-    estojo.drawPixmap(QRectF(0,0,w,h),this->backGround,tam2);
-    for(int i=0;i<this->tableData.count();i++)
+    QRectF tam2(0,0,backGround.width(),backGround.height());
+    estojo.drawPixmap(QRectF(0,0,w,h),backGround,tam2);
+    for(int i=0;i<tableData.count();i++)
     {
-        im=this->tableData.getImage(i);
+        im=tableData.getImage(i);
         if(i==i1st || i==i2nd || matched[i])
         {
             QRectF tam(0,0,im.width(),im.height());
@@ -82,8 +74,8 @@ void memoryGame::paintEvent(QPaintEvent *ev)
         }
         else
         {
-            QRectF tam(0,0,this->cardBack.width(),this->cardBack.height());
-            estojo.drawPixmap(pos,this->cardBack,tam);
+            QRectF tam(0,0,cardBack.width(),cardBack.height());
+            estojo.drawPixmap(pos,cardBack,tam);
         }
         x+=(wi+dx);
         if(x>=w-1-dx)
@@ -94,15 +86,15 @@ void memoryGame::paintEvent(QPaintEvent *ev)
         pos=QRectF(x,y,wi,hi);
 
     }
-    if(this->posSel.x()>=0 && this->posSel.y()>=0)
+    if(posSel.x()>=0 && posSel.y()>=0)
     {
         estojo.setBrush(QColor(0,255,0,30));
-        estojo.drawRect(this->posSel);
+        estojo.drawRect(posSel);
     }
 
 
 
-    //estojo.drawEllipse(this->posSel.center(),this->sizeSel*wi/2,this->sizeSel*hi/2);
+    //estojo.drawEllipse(posSel.center(),sizeSel*wi/2,sizeSel*hi/2);
     estojo.end();
 
 }
@@ -113,51 +105,50 @@ void memoryGame::showEvent(QShowEvent *sev)
     int nSrc=widget->screenCount();
     QRect rect = widget->screenGeometry(nSrc-1);             // get second window size
 
-    this->setGeometry(rect);
+    setGeometry(rect);
 
-    this->ticTac->start(this->tableData.getTimeSel()*100);
-    this->sizeSel=0;
-    this->rowSelOld=-1;
-    this->i1st=this->i2nd=-1;
-    this->memoTime=0;
-    this->memoStart=false;
+    ticTac.start(tableData.getTimeSel()*100);
+    sizeSel=0;
+    rowSelOld=-1;
+    i1st=i2nd=-1;
+    memoTime=0;
+    memoStart=false;
 
-    this->matched.clear();
-    this->matched.assign(this->tableData.count(),false);
+    matched.clear();
+    matched.assign(tableData.count(),false);
 
-    this->setSize();
+    setSize();
 }
 
 void memoryGame::closeEvent(QCloseEvent *cev)
 {
-    this->ticTac->stop();
-    this->disconnect();
+    ticTac.stop();
+    disconnect();
 }
 
 void memoryGame::hideEvent(QHideEvent *hev)
 {
-    this->ticTac->stop();
-    this->disconnect();
-    this->close();
+    ticTac.stop();
+    disconnect();
+    close();
 }
 
 void memoryGame::on_ticTacTimeOver()
 {
-    int w=this->geometry().width();
-    int h=this->geometry().height();
-    int cols=this->tableData.getGridSize().width();
-    int rows=this->tableData.getGridSize().height();
-
+    int w=geometry().width();
+    int h=geometry().height();
+    int cols=tableData.getGridSize().width();
+    int rows=tableData.getGridSize().height();
     float dx=(w-(wi*cols))/(cols+1);   //center the images
     float dy=(h-(hi*rows))/(rows+1);
     float x=dx;
     float y=dy;
     QRectF pos(x,y,wi,hi);
-    this->posSel=QRectF(-1,-1,-1,-1);       // not found
+    posSel=QRectF(-1,-1,-1,-1);       // not found
     int nMatched=0;
-    for(int i=0;i<this->tableData.count();i++)
+    for(int i=0;i<tableData.count();i++)
     {
-        if(this->matched[i])nMatched++;         // count matched cards
+        if(matched[i])nMatched++;         // count matched cards
         if(pos.contains(pt))
         {
             posSel=pos;
@@ -170,24 +161,24 @@ void memoryGame::on_ticTacTimeOver()
             rowSelOld=i;
             if(sizeSel>=0.99999)
             {
-                this->sizeSel=0;
-                if(!this->matched[i])       // only avaliable cards
+                sizeSel=0;
+                if(!matched[i])       // only avaliable cards
                 {
                     if(i1st<0)    // selecting the first card
                     {
-                        this->i1st=i;
-                        this->selectedSound->play();
+                        i1st=i;
+                        selectedSound.play();
                     }
                     else if(i2nd<0) // selecting the second card
                     {
                         if(i!=i1st) // desconsidering double selecting the same card
                         {
-                            this->i2nd=i;
-                            this->selectedSound->play();
+                            i2nd=i;
+                            selectedSound.play();
                             // verify if was matched
-                            if(this->tableData.getId(i1st)==this->tableData.getId(i2nd))
+                            if(tableData.getId(i1st)==tableData.getId(i2nd))
                             {
-                                this->matched[i1st]=this->matched[i2nd]=true;
+                                matched[i1st]=matched[i2nd]=true;
                                 i1st=i2nd=-1;
                             }
                             else
@@ -212,32 +203,32 @@ void memoryGame::on_ticTacTimeOver()
         memoTime+=0.2;
         if(memoTime>=0.9999)
         {
-            this->memoTime=0;
+            memoTime=0;
             i1st=i2nd=-1;
             memoStart=false;
         }
     }
-    if(nMatched==this->tableData.count())       // end of game
+    if(nMatched==tableData.count())       // end of game
     {
-        this->ticTac->stop();
-        this->fini();
+        ticTac.stop();
+        fini();
     }
-    this->repaint();
+    repaint();
 
 }
 
 
 void memoryGame::fini()
 {
-    QLabel *l=new QLabel();
-    if(!movie->isValid())
+    QLabel *l=new QLabel(this);
+    if(!movie.isValid())
         int u=0;
-    l->setMovie(movie);
-    this->ui->verticalLayout->addWidget(l);
-    this->setSize();
-    movie->setSpeed(200);
+    l->setMovie(&movie);
+    ui.verticalLayout->addWidget(l);
+    setSize();
+    movie.setSpeed(200);
     QSound::play("iwon.wav");
-    movie->start();
-    this->repaint();
+    movie.start();
+    repaint();
 
 }

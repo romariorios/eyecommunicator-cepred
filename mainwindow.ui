@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>826</width>
+    <width>949</width>
     <height>549</height>
    </rect>
   </property>
@@ -14,7 +14,7 @@
    <string>EyeHelper</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_4">
+   <layout class="QHBoxLayout" name="horizontalLayout_3">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_5">
       <item>
@@ -26,6 +26,9 @@
       </item>
       <item>
        <widget class="QListWidget" name="listImages">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clicar para selecionar imagem para a prancha.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
         <property name="lineWidth">
          <number>22</number>
         </property>
@@ -70,7 +73,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>826</width>
+     <width>949</width>
      <height>21</height>
     </rect>
    </property>
@@ -154,6 +157,9 @@
              <height>16777215</height>
             </size>
            </property>
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Define o tipo da prancha.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
            <item>
             <property name="text">
              <string>Grade</string>
@@ -166,12 +172,12 @@
            </item>
            <item>
             <property name="text">
-             <string>Sequência</string>
+             <string>Memória</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>Memória</string>
+             <string>Grade Lateral</string>
             </property>
            </item>
           </widget>
@@ -185,6 +191,9 @@
          </item>
          <item>
           <widget class="QDoubleSpinBox" name="timeSel">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Define o tempo para seleção das imagens na prancha.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
            <property name="decimals">
             <number>2</number>
            </property>
@@ -192,7 +201,7 @@
             <double>0.500000000000000</double>
            </property>
            <property name="value">
-            <double>1.000000000000000</double>
+            <double>0.500000000000000</double>
            </property>
           </widget>
          </item>
@@ -307,19 +316,43 @@
         </layout>
        </item>
        <item>
-        <widget class="QTreeView" name="treeImages">
-         <property name="sortingEnabled">
-          <bool>true</bool>
+        <widget class="QTabWidget" name="pastas">
+         <property name="currentIndex">
+          <number>0</number>
          </property>
-         <property name="animated">
-          <bool>true</bool>
-         </property>
-         <property name="headerHidden">
-          <bool>true</bool>
-         </property>
-         <attribute name="headerVisible">
-          <bool>false</bool>
-         </attribute>
+         <widget class="QWidget" name="tab">
+          <attribute name="title">
+           <string>Pastas</string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="QTreeView" name="treeImages">
+             <property name="sortingEnabled">
+              <bool>true</bool>
+             </property>
+             <property name="animated">
+              <bool>true</bool>
+             </property>
+             <property name="headerHidden">
+              <bool>true</bool>
+             </property>
+             <attribute name="headerVisible">
+              <bool>false</bool>
+             </attribute>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tab_2">
+          <attribute name="title">
+           <string>Pranchas</string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_6">
+           <item>
+            <widget class="QListWidget" name="templates"/>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -328,6 +361,12 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="dockWidget_3">
+   <property name="accessibleName">
+    <string/>
+   </property>
+   <property name="accessibleDescription">
+    <string/>
+   </property>
    <property name="features">
     <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
    </property>
@@ -337,11 +376,25 @@
    <widget class="QWidget" name="dockWidgetContents_3">
     <layout class="QVBoxLayout" name="verticalLayout_7">
      <item>
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Texto da Prancha</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QLineEdit" name="tableText">
+         <property name="toolTip">
+          <string>Texto a ser apresentado na prancha</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QLabel" name="label_3">
          <property name="text">
-          <string>Seleciodadas</string>
+          <string>Imagens Selecionadas</string>
          </property>
         </widget>
        </item>
@@ -358,6 +411,16 @@
            <width>1024</width>
            <height>16777215</height>
           </size>
+         </property>
+         <property name="toolTip">
+          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Um click&lt;/span&gt;&lt;span style=&quot; font-style:italic;&quot;&gt; seleciona  Item, &lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;dois clicks &lt;/span&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;elimina Item&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="whatsThis">
+          <string/>
          </property>
          <property name="dragDropMode">
           <enum>QAbstractItemView::DragDrop</enum>
@@ -383,48 +446,78 @@
         </widget>
        </item>
        <item>
-        <widget class="QCommandLinkButton" name="run">
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>15</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Inicia</string>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QCommandLinkButton" name="run">
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+             <pointsize>15</pointsize>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string>Apresenta prancha em monitor secundário</string>
+           </property>
+           <property name="text">
+            <string>Inicia</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
-        <widget class="QCommandLinkButton" name="random">
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Aleatório</string>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>15</width>
-           <height>20</height>
-          </size>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QCommandLinkButton" name="random">
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Seleciona um conjunto de imagens aleatórias para a prancha.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="text">
+            <string>Aleatório</string>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>15</width>
+             <height>20</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCommandLinkButton" name="clearTable">
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>Elimina todas as imagens selecionadas</string>
+           </property>
+           <property name="text">
+            <string>Limpa</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </item>
