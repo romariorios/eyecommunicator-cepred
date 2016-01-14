@@ -33,7 +33,6 @@ MainWindow::MainWindow(QWidget *parent) :
     this->ui->treeImages->setModel(model);
     this->ui->treeImages->setAnimated(true);
     this->ui->treeImages->setIndentation(20);
-    this->ui->treeImages->setSortingEnabled(true);
     QString pth=QDir::currentPath()+"/Images";
     this->ui->treeImages->setRootIndex(model->index(pth));
     this->ui->treeImages->hideColumn(2);
@@ -47,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->selTable.setGridType(0); // type Grid
     this->selTable.setGridSize(QSize(2,1));
     this->loadTemplates();
+    model->sort(0);
 
     srand(time(NULL));
 
