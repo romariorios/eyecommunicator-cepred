@@ -37,17 +37,17 @@ private:
     QStringList excPair1;   // Exclusion Pairs of images
     QStringList excPair2;
     int actualItem;
-    void openExcludedPairs(QString name);
+    void openExcludedPairs(const QString &name);
     bool filterOK(int id);
 
 
 
 
 protected:
-    void paintEvent(QPaintEvent *ev);
-    void showEvent(QShowEvent *sev);
-    void closeEvent(QCloseEvent *cev);
-    void hideEvent(QHideEvent *hev);
+    void paintEvent(QPaintEvent *);
+    void showEvent(QShowEvent *);
+    void closeEvent(QCloseEvent *);
+    void hideEvent(QHideEvent *);
     void keyPressEvent(QKeyEvent *key);
 
 public slots:

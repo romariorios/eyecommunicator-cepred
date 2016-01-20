@@ -71,7 +71,7 @@ private:
     Eyetracker _eyetracker;
     void changeTablePar();
     QStringList allImagesPath;  // all images path for memory game purpose
-    void loadImagesDir(QString pth, QStringList *listImg);
+    void loadImagesDir(const QString &pth, QStringList *listImg);
     void loadTemplates();
 };
 

@@ -13,33 +13,33 @@ rndTableView::rndTableView(QWidget *parent) :
     selectedSound(QDir::currentPath() + "/selectSimple.wav")
 {
     ui->setupUi(this);
-    this->ticTac = new QTimer();
+    ticTac = new QTimer();
     connect(ticTac, &QTimer::timeout, this, &rndTableView::on_ticTacTimeOver);
-    this->setMouseTracking(true);
-    this->openExcludedPairs("exclusaoPares.txt");
-    this->actualItem=0;
+    setMouseTracking(true);
+    openExcludedPairs("exclusaoPares.txt");
+    actualItem=0;
 
 }
 
 rndTableView::~rndTableView()
 {
     delete ui;
-    this->ticTac->stop();
+    ticTac->stop();
 }
 
 void rndTableView::setTable(table tb)
 {
-    this->tableData=tb;
-    this->rndSelimages();
+    tableData=tb;
+    rndSelimages();
 }
 
-void rndTableView::paintEvent(QPaintEvent *ev)
+void rndTableView::paintEvent(QPaintEvent *)
 {
-    if(this->tableData.count()==0)
+    if (tableData.count() == 0)
         return;
     QPainter estojo;
-    int w=this->geometry().width();
-    int h=this->geometry().height();
+    int w=geometry().width();
+    int h=geometry().height();
     int cols=tableData.getGridSize().width();
     int rows=tableData.getGridSize().height();
     float dx=(w-(wi*cols))/(cols+1);   //center the images
@@ -51,13 +51,13 @@ void rndTableView::paintEvent(QPaintEvent *ev)
     estojo.begin(this);
     //    QRectF tam2(0,0,backGround.width(),backGround.height());
     //    estojo.drawPixmap(QRectF(0,0,w,h),backGround,tam2);
-    for(int i=0;i<rndTableData.count();i++)
+    for (int i=0;i<rndTableData.count();i++)
     {
         im=rndTableData.getImage(i);
         QRectF tam(0,0,im.width(),im.height());
         estojo.drawPixmap(pos,im,tam);
         x+=(wi+dx);
-        if(x>=w-1-dx)
+        if (x>=w-1-dx)
         {
             x=dx;
             y+=(hi+dy);
@@ -65,31 +65,31 @@ void rndTableView::paintEvent(QPaintEvent *ev)
         pos=QRectF(x,y,wi,hi);
 
     }
-    if(this->selected)
+    if (selected)
     {
         estojo.setBrush(QColor(0,255,0,80));
-        estojo.drawRect(this->posSel);
+        estojo.drawRect(posSel);
     }
     else
     {
-        if(this->posSel.x()>=0 && this->posSel.y()>=0)
+        if (posSel.x()>=0 && posSel.y()>=0)
         {
             estojo.setBrush(QColor(0,255,0,30));
-            estojo.drawRect(this->posSel);
+            estojo.drawRect(posSel);
         }
     }
 
-    //estojo.drawEllipse(this->posSel.center(),this->sizeSel*wi/2,this->sizeSel*hi/2);
+    //estojo.drawEllipse(posSel.center(),sizeSel*wi/2,sizeSel*hi/2);
     estojo.end();
 
 }
 
 void rndTableView::on_ticTacTimeOver()
 {
-    if(this->sizeSel>=1)    // the image was aready selected
+    if (sizeSel>=1)    // the image was aready selected
         return;
-    int w=this->geometry().width();
-    int h=this->geometry().height();
+    int w=geometry().width();
+    int h=geometry().height();
     int cols=tableData.getGridSize().width();
     int rows=tableData.getGridSize().height();
     float dx=(w-(wi*cols))/(cols+1);   //center the images
@@ -97,42 +97,42 @@ void rndTableView::on_ticTacTimeOver()
     float x=dx;
     float y=dy;
     QRectF pos(x,y,wi,hi);
-    this->posSel = {-1,-1,-1,-1};       // not found
-    for(int i=0;i<this->rndTableData.count();i++)
+    posSel = {-1,-1,-1,-1};       // not found
+    for (int i=0;i<rndTableData.count();i++)
     {
-        if(pos.contains(pt))
+        if (pos.contains(pt))
         {
             posSel=pos;
-            if(rowSelOld==i)
+            if (rowSelOld == i)
             {
                 sizeSel+=0.10;
             }
             else
                 sizeSel=0;
             rowSelOld=i;
-            if(sizeSel>=0.99999)
+            if (sizeSel>=0.99999)
             {
-                this->selected=true;
+                selected=true;
                 selectedSound.play();
-                this->ticTac->stop();
+                ticTac->stop();
             }
-            this->repaint();
+            repaint();
             return;
         }
 
         x+=(wi+dx);
-        if(x>=w-1-dx)
+        if (x>=w-1-dx)
         {
             x=dx;
             y+=(hi+dy);
         }
         pos=QRectF(x,y,wi,hi);
     }
-    this->repaint();
+    repaint();
 
 }
 
-void rndTableView::showEvent(QShowEvent *sev)
+void rndTableView::showEvent(QShowEvent *)
 {
     QDesktopWidget *widget = QApplication::desktop();
     int nSrc=widget->screenCount();
@@ -140,11 +140,11 @@ void rndTableView::showEvent(QShowEvent *sev)
 
     setGeometry(rect);
 
-    this->ticTac->start(this->tableData.getTimeSel()*100);
-    this->sizeSel=0;
-    this->rowSelOld=-1;
-    this->setSize();
-    this->selected=false;
+    ticTac->start(tableData.getTimeSel()*100);
+    sizeSel=0;
+    rowSelOld=-1;
+    setSize();
+    selected=false;
 
 }
 
@@ -156,7 +156,7 @@ void rndTableView::setSize()
     int h=geometry().height();
     wi=(float)w/tableData.getGridSize().width(); // image size
     hi=(float)h/tableData.getGridSize().height();
-    if(wi<hi)
+    if (wi<hi)
         hi=wi=wi*0.8;
     else
         wi=hi=hi*0.8;
@@ -168,101 +168,101 @@ bool rndTableView::rndSelimages()
     int cols=tableData.getGridSize().width();
     int rows=tableData.getGridSize().height();
     int N= cols*rows;
-    int nT=this->tableData.getListCellSize();
-    this->rndTableData.clearAll();
-    this->rndTableData.addCell(this->tableData.getCell(this->actualItem));
+    int nT=tableData.count();
+    rndTableData.clearAll();
+    rndTableData.addCell(tableData.getCell(actualItem));
     int i=0;
     int tries=0;
     while(i<N-1 && tries<1000)
     {
         tries++;
         int id=rand()%nT;
-        if(this->filterOK(id))
+        if (filterOK(id))
         {
             i++;
-            this->rndTableData.addCell(this->tableData.getCell(id));
+            rndTableData.addCell(tableData.getCell(id));
         }
     }
-    this->rndTableData.randomImages();
-    this->actualItem++;
-    if(this->actualItem>=nT)
-        this->actualItem=0;
+    rndTableData.randomImages();
+    actualItem++;
+    if (actualItem>=nT)
+        actualItem=0;
 
     return true;
 }
 
-void rndTableView::openExcludedPairs(QString name)
+void rndTableView::openExcludedPairs(const QString &name)
 {
     ifstream ifp;
     ifp.open(name.toLocal8Bit());
     string p1,p2;
-    this->excPair1.clear();
-    this->excPair2.clear();
+    excPair1.clear();
+    excPair2.clear();
     while(ifp>>p1>>p2)
     {
-        this->excPair1.push_back(QString::fromLatin1(p1.c_str()));
-        this->excPair2.push_back(QString::fromLatin1(p2.c_str()));
+        excPair1.push_back(QString::fromLatin1(p1.c_str()));
+        excPair2.push_back(QString::fromLatin1(p2.c_str()));
     }
     ifp.close();
 }
 
 bool rndTableView::filterOK(int id)
 {
-    if(actualItem==id)
+    if (actualItem == id)
         return false;
-    QString actName=this->tableData.getCell(this->actualItem).getImgName();
-    QString tableName=this->tableData.getCell(id).getImgName();
+    QString actName=tableData.getCell(actualItem).getImgName();
+    QString tableName=tableData.getCell(id).getImgName();
     // Verify if the same image was previously selected
-    int tam=this->rndTableData.getListCellSize();
-    for(int i=0;i<tam;i++)
+    int tam = rndTableData.count();
+    for (int i=0;i<tam;i++)
     {
-        QString rndTableName=this->rndTableData.getCell(i).getImgName();
-        if(rndTableName==tableName)
+        QString rndTableName=rndTableData.getCell(i).getImgName();
+        if (rndTableName == tableName)
             return false;
     }
 
     // verify exclusion pairs
-   for(int i=0;i<this->excPair1.size();i++)
+   for (int i=0;i<excPair1.size();i++)
    {
 
-       if(tableName==this->excPair1[i] && actName==this->excPair2[i] ||
-          tableName==this->excPair2[i] && actName==this->excPair1[i])
+       if (tableName == excPair1[i] && actName == excPair2[i] ||
+          tableName == excPair2[i] && actName == excPair1[i])
            return false;
    }
    return true;
 }
 
-void rndTableView::closeEvent(QCloseEvent *cev)
+void rndTableView::closeEvent(QCloseEvent *)
 {
-    this->ticTac->stop();
-    this->disconnect();
+    ticTac->stop();
+    disconnect();
 
 }
 
-void rndTableView::hideEvent(QHideEvent *hev)
+void rndTableView::hideEvent(QHideEvent *)
 {
-    this->ticTac->stop();
-    this->disconnect();
+    ticTac->stop();
+    disconnect();
 }
 
 void rndTableView::keyPressEvent(QKeyEvent *key)
 {
 
-    if(key->key()==Qt::Key_Delete)
+    if (key->key() == Qt::Key_Delete)
     {
-        this->sizeSel=0;
-        this->rowSelOld=-1;
-        this->selected=false;
-        this->ticTac->start(this->tableData.getTimeSel()*100);
+        sizeSel=0;
+        rowSelOld=-1;
+        selected=false;
+        ticTac->start(tableData.getTimeSel()*100);
     }
-    if(key->key()==Qt::Key_Space)
+    if (key->key() == Qt::Key_Space)
     {
-        this->rndSelimages();
-        this->sizeSel=0;
-        this->rowSelOld=-1;
-        this->selected=false;
-        this->ticTac->start(this->tableData.getTimeSel()*100);
-        this->repaint();
+        rndSelimages();
+        sizeSel=0;
+        rowSelOld=-1;
+        selected=false;
+        ticTac->start(tableData.getTimeSel()*100);
+        repaint();
     }
 
     QDialog::keyPressEvent(key);

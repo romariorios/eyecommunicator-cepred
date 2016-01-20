@@ -44,10 +44,10 @@ private:
     QSound selectedSound;        // sound of selected image
 
 protected:
-    void paintEvent(QPaintEvent *ev);
-    void showEvent(QShowEvent *sev);
-    void closeEvent(QCloseEvent *cev);
-    void hideEvent(QHideEvent *hev);
+    void paintEvent(QPaintEvent *);
+    void showEvent(QShowEvent *);
+    void closeEvent(QCloseEvent *);
+    void hideEvent(QHideEvent *);
 
 public slots:
     inline setPt(const QPoint &p) { pt = p; }

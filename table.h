@@ -10,7 +10,7 @@ class tableCell
 public:
     QPixmap img;
     QString imgPath;
-    QString getImgName();
+    QString getImgName() const;
     int id;
     bool eyeSelectable;
 };
@@ -18,20 +18,18 @@ public:
 class table
 {
 public:
-    table();
-    ~table();
-    void addImg(QString imgPth);
-    void addImg(QString imgPth, int id);
-    void addCell(tableCell c);
-    tableCell getCell(int i);
+    void addImg(const QString &imgPth);
+    void addImg(const QString &imgPth, int id);
+    void addCell(const tableCell &c);
+    const tableCell &getCell(int i) const;
     void setCellEyeSelectable(int i,bool val);
 
     void delImg(int row);
     void clearAll();
     QSize getGridSize() const;
     void setGridSize(const QSize &value);
-    QPixmap getImage(int row);
-    int count(){return this->cell.size();}
+    QPixmap getImage(int row) const;
+    int count() const { return cell.size(); }
 
     int getGridType() const;
     void setGridType(int value);
@@ -39,10 +37,9 @@ public:
     double getTimeSel() const;
     void setTimeSel(double value);
 
-    int getId(int row){return this->cell[row].id;}
-    QString getImgPath(int row){return this->cell[row].imgPath;}
+    int getId (int row) const { return cell[row].id; }
+    QString getImgPath(int row) const { return cell[row].imgPath; }
     void randomImages();
-    int getListCellSize(){return this->cell.size();}
 
     QString getText() const;
     void setText(const QString &value);

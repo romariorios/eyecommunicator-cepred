@@ -15,7 +15,7 @@ class tableView : public QDialog
 public:
     explicit tableView(QWidget *parent = 0);
     ~tableView();
-    void setTable(table tb);
+    void setTable(const table &tb);
 
     void setIsLateral(bool value);
 
@@ -33,10 +33,10 @@ private:
     void setSize();
 
 protected:
-    void paintEvent(QPaintEvent *ev);
-    void showEvent(QShowEvent *sev);
-    void closeEvent(QCloseEvent *cev);
-    void hideEvent(QHideEvent *hev);
+    void paintEvent(QPaintEvent *);
+    void showEvent(QShowEvent *);
+    void closeEvent(QCloseEvent *);
+    void hideEvent(QHideEvent *);
     void keyPressEvent(QKeyEvent *key);
 
 public slots:

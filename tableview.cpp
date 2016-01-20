@@ -5,217 +5,221 @@
 #include <QSvgRenderer>
 #include <QDesktopWidget>
 
-
 tableView::tableView(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::tableView)
 {
     ui->setupUi(this);
-    this->ticTac = new QTimer();
+    ticTac = new QTimer();
     connect(ticTac, &QTimer::timeout, this, &tableView::on_ticTacTimeOver);
-    this->setMouseTracking(true);
+    setMouseTracking(true);
 }
 
 tableView::~tableView()
 {
     delete ui;
-    this->ticTac->stop();
+    ticTac->stop();
 }
 
-void tableView::setTable(table tb)
+void tableView::setTable(const table &tb)
 {
-    this->tableData=tb;
+    tableData = tb;
 }
+
 void tableView::setIsLateral(bool value)
 {
     isLateral = value;
 }
 
-
-void tableView::paintEvent(QPaintEvent *ev)
+void tableView::paintEvent(QPaintEvent *)
 {
-    if(this->tableData.count()==0)
+    if (tableData.count() == 0)
         return;
+
     QPainter estojo;
-    float fwi=wi;
-    float fhi=hi;
-    if(this->isLateral)
+    float fwi = wi;
+    float fhi = hi;
+
+    if (isLateral)
     {
-        fwi=fwi*0.7;
-        fhi=fhi*0.7;
+        fwi = fwi * 0.7;
+        fhi = fhi * 0.7;
     }
-    int w=this->geometry().width();
-    int h=this->geometry().height();
-    int cols=tableData.getGridSize().width();
-    int rows=tableData.getGridSize().height();
-    float dx=(w-(fwi*cols))/(cols+1);   //center the images
-    float dy=(h-(fhi*rows))/(rows+1);
+
+    int w = geometry().width();
+    int h = geometry().height();
+    int cols = tableData.getGridSize().width();
+    int rows = tableData.getGridSize().height();
+    float dx = (w-(fwi * cols)) / (cols + 1);   //center the images
+    float dy = (h-(fhi * rows)) / (rows + 1);
     float x;
-    float y=dy;
-    if(this->isLateral)
+    float y = dy;
+
+    if (isLateral)
     {
-        x=1;
-        dx=3*dx;
+        x = 1;
+        dx = 3 * dx;
     }
     else
-        x=dx;
+        x = dx;
 
-    QPixmap im=tableData.getImage(0);
-    QRectF pos(x,y,fwi,fhi);
+    QPixmap im = tableData.getImage(0);
+    QRectF pos(x, y, fwi, fhi);
     estojo.begin(this);
-    //    QRectF tam2(0,0,backGround.width(),backGround.height());
-    //    estojo.drawPixmap(QRectF(0,0,w,h),backGround,tam2);
-    for(int i=0;i<tableData.count();i++)
+    for (int i = 0; i<tableData.count(); i++)
     {
-        im=tableData.getImage(i);
-        QRectF tam(0,0,im.width(),im.height());
-        estojo.drawPixmap(pos,im,tam);
-        x+=(fwi+dx);
-        if(x>=w-1-dx && !isLateral)
+        im = tableData.getImage(i);
+        QRectF tam(0, 0, im.width(), im.height());
+        estojo.drawPixmap(pos, im, tam);
+        x += fwi + dx;
+        if (x >= w - 1 - dx && !isLateral)
         {
-            x=dx;
-            y+=(fhi+dy);
+            x = dx;
+            y += (fhi+dy);
         }
-        pos=QRectF(x,y,fwi,fhi);
+        pos = QRectF(x, y, fwi, fhi);
 
     }
-    if(this->selected)
+    if (selected)
     {
-        estojo.setBrush(QColor(0,255,0,80));
-        estojo.drawRect(this->posSel);
+        estojo.setBrush(QColor(0, 255, 0, 80));
+        estojo.drawRect(posSel);
     }
     else
     {
-        if(this->posSel.x()>=0 && this->posSel.y()>=0)
+        if (posSel.x()>=0 && posSel.y()>=0)
         {
-            estojo.setBrush(QColor(0,255,0,30));
-            estojo.drawRect(this->posSel);
+            estojo.setBrush(QColor(0, 255, 0, 30));
+            estojo.drawRect(posSel);
         }
     }
 
-    //estojo.drawEllipse(this->posSel.center(),this->sizeSel*fwi/2,this->sizeSel*fhi/2);
     estojo.end();
-
 }
 
 void tableView::on_ticTacTimeOver()
 {
-    if(this->sizeSel>=1)    // the image was aready selected
+    if (sizeSel >= 1)    // the image was aready selected
         return;
-    float fwi=wi;
-    float fhi=hi;
-    if(this->isLateral)
+
+    float fwi = wi;
+    float fhi = hi;
+
+    if (isLateral)
     {
-        fwi=fwi*0.7;
-        fhi=fhi*0.7;
+        fwi = fwi * 0.7;
+        fhi = fhi * 0.7;
     }
-    int w=this->geometry().width();
-    int h=this->geometry().height();
-    int cols=tableData.getGridSize().width();
-    int rows=tableData.getGridSize().height();
-    float dx=(w-(fwi*cols))/(cols+1);   //center the images
-    float dy=(h-(fhi*rows))/(rows+1);
+
+    int w = geometry().width();
+    int h = geometry().height();
+    int cols = tableData.getGridSize().width();
+    int rows = tableData.getGridSize().height();
+    float dx = (w - (fwi * cols)) / (cols + 1);   //center the images
+    float dy = (h - (fhi * rows)) / (rows + 1);
     float x;
-    float y=dy;
-    if(this->isLateral)
+    float y = dy;
+
+    if (isLateral)
     {
-        x=1;
-        dx=3*dx;
+        x = 1;
+        dx = 3 * dx;
     }
     else
-        x=dx;
-    QRectF pos(x,y,fwi,fhi);
-    this->posSel = {-1,-1,-1,-1};       // not found
-    for(int i=0;i<this->tableData.count();i++)
+        x = dx;
+
+    QRectF pos(x, y, fwi, fhi);
+    posSel = {-1, -1, -1, -1};       // not found
+    for (int i = 0; i<tableData.count(); i++)
     {
-        if(pos.contains(pt) && this->tableData.getCell(i).eyeSelectable) // mudança aqui
+        if (pos.contains(pt) && tableData.getCell(i).eyeSelectable) // mudança aqui
         {
-            posSel=pos;
-            if(rowSelOld==i)
+            posSel = pos;
+
+            if (rowSelOld == i)
             {
-                sizeSel+=0.10;
+                sizeSel += 0.10;
             }
             else
-                sizeSel=0;
-            rowSelOld=i;
-            if(sizeSel>=0.99999)
+                sizeSel = 0;
+
+            rowSelOld = i;
+            if (sizeSel>=0.99999)
             {
-                this->selected=true;
+                selected = true;
                 QSound::play(QDir::currentPath()+"/select.wav");
-                this->ticTac->stop();
+                ticTac->stop();
             }
-            this->repaint();
+            repaint();
             return;
         }
 
-        x+=(fwi+dx);
-        if(x>=w-1-dx && !isLateral)
+        x += fwi + dx;
+
+        if (x >= w - 1 - dx && !isLateral)
         {
-            x=dx;
-            y+=(fhi+dy);
+            x = dx;
+            y += fhi + dy;
         }
-        pos=QRectF(x,y,fwi,fhi);
+
+        pos = QRectF(x, y, fwi, fhi);
     }
-    this->repaint();
+    repaint();
 
 }
 
-void tableView::showEvent(QShowEvent *sev)
+void tableView::showEvent(QShowEvent *)
 {
     QDesktopWidget *widget = QApplication::desktop();
-    int nSrc=widget->screenCount();
-    QRect rect = widget->screenGeometry(nSrc-1);             // get second window size
+    int nSrc = widget->screenCount();
+    QRect rect = widget->screenGeometry(nSrc - 1);             // get second window size
 
     setGeometry(rect);
 
-    this->ticTac->start(this->tableData.getTimeSel()*100);
-    this->sizeSel=0;
-    this->rowSelOld=-1;
-    this->setSize();
-    this->selected=false;
-    this->ui->label->setText(this->tableData.getText());
+    ticTac->start(tableData.getTimeSel() * 100);
+    sizeSel = 0;
+    rowSelOld = -1;
+    setSize();
+    selected = false;
+    ui->label->setText(tableData.getText());
 }
 
 
 void tableView::setSize()
 {
+    int w = geometry().width();
+    int h = geometry().height();
 
-    int w=geometry().width();
-    int h=geometry().height();
-    wi=(float)w/tableData.getGridSize().width(); // image size
-    hi=(float)h/tableData.getGridSize().height();
-    if(wi<hi)
-        hi=wi=wi*0.8;
+    wi = static_cast<float>(w) / tableData.getGridSize().width(); // image size
+    hi = static_cast<float>(h) / tableData.getGridSize().height();
+
+    if (wi < hi)
+        hi = wi = wi * 0.8;
     else
-        wi=hi=hi*0.8;
-
+        wi = hi = hi * 0.8;
 }
 
-void tableView::closeEvent(QCloseEvent *cev)
+void tableView::closeEvent(QCloseEvent *)
 {
-    this->ticTac->stop();
-    this->disconnect();
-
+    ticTac->stop();
+    disconnect();
 }
 
-void tableView::hideEvent(QHideEvent *hev)
+void tableView::hideEvent(QHideEvent *)
 {
-    this->ticTac->stop();
-    this->disconnect();
+    ticTac->stop();
+    disconnect();
 }
 
 void tableView::keyPressEvent(QKeyEvent *key)
 {
-    if(key->key()==Qt::Key_Delete)
+    if (key->key() == Qt::Key_Delete)
     {
-        this->sizeSel=0;
-        this->rowSelOld=-1;
-        this->selected=false;
-        this->ticTac->start(this->tableData.getTimeSel()*100);
+        sizeSel = 0;
+        rowSelOld = -1;
+        selected = false;
+        ticTac->start(tableData.getTimeSel() * 100);
     }
+
     QDialog::keyPressEvent(key);
-    return;
-
 }
-
-
