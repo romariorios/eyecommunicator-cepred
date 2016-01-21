@@ -121,18 +121,7 @@ void MainWindow::on_treeImages_clicked(const QModelIndex &index)
 
 void MainWindow::on_listImages_clicked(const QModelIndex &index)
 {
-    int N = ui->gridLines->value() * ui->gridCol->value();
-
-    if (ui->listSelected->count() >= N && ui->type->currentIndex() != 1)
-        return;
-
-    auto item = new QListWidgetItem(ui->listSelected);
-    *item = *ui->listImages->item(index.row());
-    item->setFlags(item->flags() | Qt::ItemIsUserCheckable); // set checkable flag
-    item->setCheckState(Qt::Checked); // AND initialize check state
-
-    ui->listSelected->addItem(item);
-    selTable.addImg(imgListPath[index.row()], index.row());
+    selectImage(index.row());
 }
 
 void MainWindow::on_listSelected_clicked(const QModelIndex &index)
@@ -314,6 +303,22 @@ void MainWindow::loadImagesDir(const QString &pth, QStringList *listImg)
         loadImagesDir(fileInfo.filePath(), listImg);
     }
 
+}
+
+void MainWindow::selectImage(int row)
+{
+    int N = ui->gridLines->value() * ui->gridCol->value();
+
+    if (ui->listSelected->count() >= N && ui->type->currentIndex() != 1)
+        return;
+
+    auto item = new QListWidgetItem(ui->listSelected);
+    *item = *ui->listImages->item(row);
+    item->setFlags(item->flags() | Qt::ItemIsUserCheckable); // set checkable flag
+    item->setCheckState(Qt::Checked); // AND initialize check state
+
+    ui->listSelected->addItem(item);
+    selTable.addImg(imgListPath[row], row);
 }
 
 void MainWindow::loadTemplates(QDir dir)
@@ -626,4 +631,11 @@ void MainWindow::on_listSelected_doubleClicked(const QModelIndex &index)
     selTable.delImg(index.row());
     ui->listSelected->takeItem(index.row());
 
+}
+
+void MainWindow::on_selecionarTodas_clicked()
+{
+    ui->listSelected->clear();
+    for (int row = 0; row < imgListPath.size(); ++row)
+        selectImage(row);
 }

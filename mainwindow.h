@@ -60,6 +60,8 @@ private slots:
 
     void on_listSelected_doubleClicked(const QModelIndex &index);
 
+    void on_selecionarTodas_clicked();
+
 private:
     bool tryStart(int pluginIndex, const QVariantHash &params = {});
     void setPluginState(bool isStarted, int pluginIndex);
@@ -73,6 +75,7 @@ private:
     void changeTablePar();
     QStringList allImagesPath;  // all images path for memory game purpose
     void loadImagesDir(const QString &pth, QStringList *listImg);
+    void selectImage(int row);
     void loadTemplates(QDir dir);
 };
 

@@ -26,7 +26,7 @@
          <attribute name="title">
           <string>Imagens disponíveis</string>
          </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_8">
+         <layout class="QVBoxLayout" name="verticalLayout_6">
           <item>
            <widget class="QListWidget" name="listImages">
             <property name="toolTip">
@@ -66,6 +66,30 @@
              <enum>QListView::IconMode</enum>
             </property>
            </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="selecionarTodas">
+              <property name="text">
+               <string>Selecionar todas</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
