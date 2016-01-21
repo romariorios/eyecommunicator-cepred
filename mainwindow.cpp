@@ -586,7 +586,7 @@ void MainWindow::on_actionSalvar_triggered()
     ofp << ui->gridCol->value() << endl;
     ofp << ui->gridLines->value() << endl;
     ofp << ui->timeSel->value() << endl;
-    ofp << ui->tableText->text().toStdString() << endl;
+    ofp << ui->tableText->text().toLatin1().constData() << endl;
 
     // save images paths
     for (int i = 0; i < selTable.count(); i++)
