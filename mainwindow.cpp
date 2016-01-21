@@ -51,7 +51,6 @@ MainWindow::MainWindow(QWidget *parent) :
     selTable.setGridType(0); // type Grid
     selTable.setGridSize(QSize(2, 1));
 
-    loadTemplates();
     model->sort(0);
 
     srand(time(NULL));
@@ -90,7 +89,11 @@ void MainWindow::on_treeImages_clicked(const QModelIndex &index)
 {
     QDir dir(model->filePath(index));
     dir.setFilter(QDir::Files | QDir::NoSymLinks);
+    dir.setNameFilters({"*.svg", "*.png"});
     dir.setSorting(QDir::Name);
+    _curDir = dir;
+
+    loadTemplates(dir);
 
     ui->listImages->clear();
     imgListPath.clear();
@@ -313,9 +316,11 @@ void MainWindow::loadImagesDir(const QString &pth, QStringList *listImg)
 
 }
 
-void MainWindow::loadTemplates()
+void MainWindow::loadTemplates(QDir dir)
 {
-    QDir dir(QDir::current().absoluteFilePath("Pranchas"));
+    ui->templates->clear();
+    templateListPath.clear();
+
     dir.setFilter(QDir::Files | QDir::NoSymLinks);
     dir.setNameFilters({"*.tbl"});
 
@@ -564,7 +569,7 @@ void MainWindow::openTemplate(QString nome)
 void MainWindow::on_actionSalvar_triggered()
 {
     QString nome = QFileDialog::getSaveFileName(this, "Select output file to save",
-                                                "Pranchas", "Tabelas (*.tbl)");
+                                                _curDir.absolutePath(), "Tabelas (*.tbl)");
     if (nome.isEmpty())
         return;
 
@@ -589,11 +594,8 @@ void MainWindow::on_actionSalvar_triggered()
     ofp.close();
     templateListPath.clear();
     ui->templates->clear();
-    loadTemplates();
+    loadTemplates(_curDir);
 }
-
-
-
 
 void MainWindow::on_actionAbrir_triggered()
 {
@@ -604,8 +606,6 @@ void MainWindow::on_actionAbrir_triggered()
 
     openTemplate(nome);
 }
-
-
 
 void MainWindow::on_templates_doubleClicked(const QModelIndex &index)
 {

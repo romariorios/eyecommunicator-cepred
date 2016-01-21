@@ -18,50 +18,69 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_5">
       <item>
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Imagens disponíveis</string>
+       <widget class="QTabWidget" name="tabWidget">
+        <property name="currentIndex">
+         <number>0</number>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QListWidget" name="listImages">
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clicar para selecionar imagem para a prancha.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="lineWidth">
-         <number>22</number>
-        </property>
-        <property name="dragDropMode">
-         <enum>QAbstractItemView::DragDrop</enum>
-        </property>
-        <property name="alternatingRowColors">
-         <bool>true</bool>
-        </property>
-        <property name="selectionMode">
-         <enum>QAbstractItemView::SingleSelection</enum>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>100</width>
-          <height>100</height>
-         </size>
-        </property>
-        <property name="flow">
-         <enum>QListView::LeftToRight</enum>
-        </property>
-        <property name="isWrapping" stdset="0">
-         <bool>true</bool>
-        </property>
-        <property name="resizeMode">
-         <enum>QListView::Adjust</enum>
-        </property>
-        <property name="layoutMode">
-         <enum>QListView::Batched</enum>
-        </property>
-        <property name="viewMode">
-         <enum>QListView::IconMode</enum>
-        </property>
+        <widget class="QWidget" name="tab_3">
+         <attribute name="title">
+          <string>Imagens disponíveis</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_8">
+          <item>
+           <widget class="QListWidget" name="listImages">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clicar para selecionar imagem para a prancha.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="lineWidth">
+             <number>22</number>
+            </property>
+            <property name="dragDropMode">
+             <enum>QAbstractItemView::DragDrop</enum>
+            </property>
+            <property name="alternatingRowColors">
+             <bool>true</bool>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::SingleSelection</enum>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>100</width>
+              <height>100</height>
+             </size>
+            </property>
+            <property name="flow">
+             <enum>QListView::LeftToRight</enum>
+            </property>
+            <property name="isWrapping" stdset="0">
+             <bool>true</bool>
+            </property>
+            <property name="resizeMode">
+             <enum>QListView::Adjust</enum>
+            </property>
+            <property name="layoutMode">
+             <enum>QListView::Batched</enum>
+            </property>
+            <property name="viewMode">
+             <enum>QListView::IconMode</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_4">
+         <attribute name="title">
+          <string>Pranchas</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_9">
+          <item>
+           <widget class="QListWidget" name="templates"/>
+          </item>
+         </layout>
+         <zorder>pastas</zorder>
+         <zorder>templates</zorder>
+        </widget>
        </widget>
       </item>
      </layout>
@@ -316,43 +335,28 @@
         </layout>
        </item>
        <item>
-        <widget class="QTabWidget" name="pastas">
-         <property name="currentIndex">
-          <number>0</number>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>Pastas</string>
          </property>
-         <widget class="QWidget" name="tab">
-          <attribute name="title">
-           <string>Pastas</string>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_3">
-           <item>
-            <widget class="QTreeView" name="treeImages">
-             <property name="sortingEnabled">
-              <bool>true</bool>
-             </property>
-             <property name="animated">
-              <bool>true</bool>
-             </property>
-             <property name="headerHidden">
-              <bool>true</bool>
-             </property>
-             <attribute name="headerVisible">
-              <bool>false</bool>
-             </attribute>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="tab_2">
-          <attribute name="title">
-           <string>Pranchas</string>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_6">
-           <item>
-            <widget class="QListWidget" name="templates"/>
-           </item>
-          </layout>
-         </widget>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QTreeView" name="treeImages">
+            <property name="sortingEnabled">
+             <bool>true</bool>
+            </property>
+            <property name="animated">
+             <bool>true</bool>
+            </property>
+            <property name="headerHidden">
+             <bool>true</bool>
+            </property>
+            <attribute name="headerVisible">
+             <bool>false</bool>
+            </attribute>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>

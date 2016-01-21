@@ -66,13 +66,14 @@ private:
     void openTemplate(QString name);
 
     QLabel _statusBarWidget;
+    QDir _curDir;
     Ui::MainWindow *ui;
     //memoryGame mg;
     Eyetracker _eyetracker;
     void changeTablePar();
     QStringList allImagesPath;  // all images path for memory game purpose
     void loadImagesDir(const QString &pth, QStringList *listImg);
-    void loadTemplates();
+    void loadTemplates(QDir dir);
 };
 
 #endif // MAINWINDOW_H
