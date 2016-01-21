@@ -635,7 +635,17 @@ void MainWindow::on_listSelected_doubleClicked(const QModelIndex &index)
 
 void MainWindow::on_selecionarTodas_clicked()
 {
+    const auto size = imgListPath.size();
+    QProgressDialog progress(tr("Selecionando imagens..."), tr("Cancela"), 0, size, this);
+    progress.setWindowModality(Qt::WindowModal);
+    progress.show();
+
     ui->listSelected->clear();
-    for (int row = 0; row < imgListPath.size(); ++row)
+    for (int row = 0; row < size; ++row) {
         selectImage(row);
+
+        progress.setValue(row + 1);
+        QApplication::processEvents();
+    }
+    progress.close();
 }
