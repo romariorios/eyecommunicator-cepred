@@ -51,7 +51,7 @@ protected:
     void keyPressEvent(QKeyEvent *key);
 
 public slots:
-    inline setPt(const QPoint &p) { pt = p; }
+    inline void setPt(const QPoint &p) { pt = p; }
 
 private slots:
     void on_ticTacTimeOver();
