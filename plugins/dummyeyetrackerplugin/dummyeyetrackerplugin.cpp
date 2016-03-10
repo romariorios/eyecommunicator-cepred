@@ -62,8 +62,8 @@ void DummyEyetrackerPlugin::timerEvent(QTimerEvent *e)
         auto pos = QCursor::pos();
         auto screen = QApplication::desktop()->screenGeometry();
         QPointF normPos{
-            double{pos.x()} / double{screen.width()},
-            double{pos.y()} / double{screen.height()}
+            static_cast<double>(pos.x()) / screen.width(),
+            static_cast<double>(pos.y()) / screen.height()
         };
 
         emit eyesPositionChanged({normPos, normPos, normPos});
