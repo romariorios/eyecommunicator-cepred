@@ -61,6 +61,9 @@ void memoryGame::paintEvent(QPaintEvent *)
     QRectF pos(x, y, wi, hi);
 
     estojo.begin(this);
+    estojo.setRenderHints(
+                QPainter::Antialiasing |
+                QPainter::SmoothPixmapTransform);
     QRectF tam2(0, 0, backGround.width(), backGround.height());
     estojo.drawPixmap(QRectF(0, 0, w, h), backGround, tam2);
 

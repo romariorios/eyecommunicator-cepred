@@ -66,6 +66,9 @@ void tableView::paintEvent(QPaintEvent *)
     QPixmap im = tableData.getImage(0);
     QRectF pos(x, y, fwi, fhi);
     estojo.begin(this);
+    estojo.setRenderHints(
+                QPainter::Antialiasing |
+                QPainter::SmoothPixmapTransform);
     for (int i = 0; i<tableData.count(); i++)
     {
         im = tableData.getImage(i);
