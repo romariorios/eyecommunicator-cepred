@@ -24,6 +24,7 @@ tableView::~tableView()
 void tableView::setTable(const table &tb)
 {
     tableData = tb;
+    resetState();
 }
 
 void tableView::setIsLateral(bool value)
@@ -178,13 +179,7 @@ void tableView::showEvent(QShowEvent *)
     QRect rect = widget->screenGeometry(nSrc - 1);             // get second window size
 
     setGeometry(rect);
-
-    ticTac->start(tableData.getTimeSel() * 100);
-    sizeSel = 0;
-    rowSelOld = -1;
-    setSize();
-    selected = false;
-    ui->label->setText(tableData.getText());
+    resetState();
 }
 
 
@@ -202,6 +197,16 @@ void tableView::setSize()
         wi = hi = hi * 0.8;
 }
 
+void tableView::resetState()
+{
+    ticTac->start(tableData.getTimeSel() * 100);
+    sizeSel = 0;
+    rowSelOld = -1;
+    setSize();
+    selected = false;
+    ui->label->setText(tableData.getText());
+}
+
 void tableView::closeEvent(QCloseEvent *)
 {
     ticTac->stop();
@@ -216,13 +221,21 @@ void tableView::hideEvent(QHideEvent *)
 
 void tableView::keyPressEvent(QKeyEvent *key)
 {
-    if (key->key() == Qt::Key_Delete)
+    switch (key->key())
     {
+    case Qt::Key_Delete:
         sizeSel = 0;
         rowSelOld = -1;
         selected = false;
         ticTac->start(tableData.getTimeSel() * 100);
+        break;
+    case Qt::Key_Left:
+        emit prevTemplateAsked();
+        break;
+    case Qt::Key_Right:
+        emit nextTemplateAsked();
+        break;
+    default:
+        QDialog::keyPressEvent(key);
     }
-
-    QDialog::keyPressEvent(key);
 }

@@ -67,6 +67,22 @@ private:
     void setPluginState(bool isStarted, int pluginIndex);
     void openTemplate(QString name);
 
+    template <typename Table>
+    void skipTemplate(Table *tb, int step)
+    {
+        auto curRow = ui->templates->currentRow();
+        auto nextRow = curRow + step;
+        if (nextRow < 0 || nextRow >= templateListPath.size())
+            return;
+
+        ui->templates->setCurrentRow(nextRow);
+        openTemplate(templateListPath[nextRow]);
+
+        selTable.setTimeSel(ui->timeSel->value());
+        selTable.setText(ui->tableText->text());
+        tb->setTable(selTable);
+    }
+
     QLabel _statusBarWidget;
     QDir _curDir;
     Ui::MainWindow *ui;

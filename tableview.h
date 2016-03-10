@@ -31,6 +31,11 @@ private:
     bool selected;
     bool isLateral;         // indicates that the grid is double lateral type
     void setSize();
+    void resetState();
+
+signals:
+    void prevTemplateAsked();
+    void nextTemplateAsked();
 
 protected:
     void paintEvent(QPaintEvent *);

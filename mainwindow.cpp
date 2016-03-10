@@ -236,6 +236,14 @@ void MainWindow::on_run_clicked()
             });
         });
         connect(tb, SIGNAL(finished(int)), tb, SLOT(deleteLater()));
+        connect(tb, &tableView::prevTemplateAsked, [this, tb]()
+        {
+            skipTemplate(tb, -1);
+        });
+        connect(tb, &tableView::nextTemplateAsked, [this, tb]()
+        {
+            skipTemplate(tb, 1);
+        });
         tb->exec();
         break;
     }
@@ -284,6 +292,14 @@ void MainWindow::on_run_clicked()
             });
         });
         connect(ltb, SIGNAL(finished(int)), ltb, SLOT(deleteLater()));
+        connect(ltb, &tableView::prevTemplateAsked, [this, ltb]()
+        {
+            skipTemplate(ltb, -1);
+        });
+        connect(ltb, &tableView::nextTemplateAsked, [this, ltb]()
+        {
+            skipTemplate(ltb, 1);
+        });
         ltb->exec();
         break;
     }
