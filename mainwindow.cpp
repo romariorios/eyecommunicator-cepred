@@ -16,6 +16,7 @@
 #include <fstream>
 #include <QProgressDialog>
 #include <QCoreApplication>
+#include <QCollator>
 
 using namespace std;
 
@@ -343,9 +344,19 @@ void MainWindow::loadTemplates(QDir dir)
     templateListPath.clear();
 
     dir.setFilter(QDir::Files | QDir::NoSymLinks);
+    dir.setSorting(QDir::NoSort);  // will sort manually
     dir.setNameFilters({"*.tbl"});
 
-    for (auto &&fileInfo : dir.entryInfoList()) {
+    auto entryList = dir.entryInfoList();
+    QCollator collator;
+    collator.setNumericMode(true);
+
+    qSort(entryList.begin(), entryList.end(), [&collator](const QFileInfo &fi1, const QFileInfo &fi2)
+    {
+        return collator.compare(fi1.baseName(), fi2.baseName()) < 0;
+    });
+
+    for (auto &&fileInfo : entryList) {
         templateListPath.push_back(fileInfo.filePath());
         ui->templates->addItem(fileInfo.baseName());
     }
