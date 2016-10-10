@@ -8,12 +8,9 @@
 #include <fstream>
 #include "table.h"
 #include "memorygame.h"
+#include "ui_mainwindow.h"
 
 #include "eyetracker.hpp"
-
-namespace Ui {
-class MainWindow;
-}
 
 class MainWindow : public QMainWindow
 {
